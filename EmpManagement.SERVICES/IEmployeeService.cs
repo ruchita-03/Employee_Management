@@ -1,4 +1,11 @@
-﻿using EmployeeManagement.Models;
+﻿using EmpManagement.Core;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+ 
+
 namespace EmployeeManagement.Services
 {
     public interface IEmployeeService
@@ -11,7 +18,8 @@ namespace EmployeeManagement.Services
 
         void Update(string id, Employee updatedEmployee);
 
-        void Remove(string id); 
-        void Delete(Employee newEmployee);  
+        void Remove(string id);
+        void Delete(Employee newEmployee);
     }
 }
+
