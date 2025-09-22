@@ -1,8 +1,0 @@
-# Ignore Visual Studio cache and build files
-.vs/
-bin/
-obj/
-*.user
-*.suo
-*.vsidx
-*.log
