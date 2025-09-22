@@ -1,72 +1,69 @@
-﻿using EmployeeManagement.Services;
-using EmpManagement.Core;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using MongoDB.Bson;
 
-namespace EmployeeManagement.Controllers
+[ApiController]
+[Route("api/[controller]")]
+public class EmployeeController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class EmployeeController(IEmployeeService employeeService) : ControllerBase
+    private readonly IEmployeeService _employeeService;
+
+    public EmployeeController(IEmployeeService employeeService)
     {
-        private readonly IEmployeeService _employeeService = employeeService;
+        _employeeService = employeeService;
+    }
 
-        // GET: api/<EmployeeController>
-        [HttpGet]
-        public ActionResult<List<Employee>> Get()
-        {
-            return Ok(_employeeService.Get());
-        }
+    // GET api/employee
+    [HttpGet]
+    public async Task<ActionResult<List<Employee>>> Get()
+    {
+        var employees = await _employeeService.GetAllAsync();
+        return Ok(employees);
+    }
 
-        // GET api/<EmployeeController>/5
-        [HttpGet("{id}")]
-        public ActionResult<Employee> Get(string id)
-        {
-            var employee = _employeeService.Get(id);
+    // GET api/employee/{id}
+    [HttpGet("{id}")]
+    public async Task<ActionResult<Employee>> Get(string id)
+    {
+        var employee = await _employeeService.GetByIdAsync(id);
+        if (employee == null)
+            return NotFound();
+        return Ok(employee);
+    }
 
-            if (employee == null)
-            {
-                return NotFound($"Employee with Id = {id} not found");
-            }
+    // POST api/employee
+    [HttpPost]
+    public async Task<IActionResult> Post([FromBody] Employee employee)
+    {
+        if (employee == null)
+            return BadRequest("Employee data is required.");
 
-            return Ok(employee);
-        }
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
 
-        // POST api/<EmployeeController>
-        [HttpPost]
-        public ActionResult<Employee> Post([FromBody] Employee employee)
-        {
-            _employeeService.Create(employee);
-            return CreatedAtAction(nameof(Get), new { id = employee.ID }, employee);
-        }
+        // Validate Id format is a valid MongoDB ObjectId
+        if (!ObjectId.TryParse(employee.Id, out _))
+            return BadRequest("Invalid Id format.");
 
-        // PUT api/<EmployeeController>/5
-        [HttpPut("{id}")]
-        public ActionResult Put(string id, [FromBody] Employee employee)
-        {
-            var existingEmployee = _employeeService.Get(id);
+        await _employeeService.CreateAsync(employee);
 
-            if (existingEmployee == null)
-            {
-                return NotFound($"Employee with Id = {id} not found");
-            }
+        return CreatedAtAction(nameof(Get), new { id = employee.Id }, employee);
+    }
 
-            _employeeService.Update(id, employee);
-            return Ok(employee);
-        }
+    // PUT api/employee/{id}
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Put(string id, [FromBody] Employee employee)
+    {
+        await _employeeService.UpdateAsync(id, employee);
+        return NoContent();
+    }
 
-        // DELETE api/<EmployeeController>/5
-        [HttpDelete("{id}")]
-        public ActionResult Delete(string id)
-        {
-            var employee = _employeeService.Get(id);
-
-            if (employee == null)
-            {
-                return NotFound($"Employee with Id = {id} not found");
-            }
-
-            _employeeService.Remove(employee.ID);
-            return Ok($"Employee with Id = {id} deleted");
-        }
+    // DELETE api/employee/{id}
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(string id)
+    {
+        await _employeeService.DeleteAsync(id);
+        return NoContent();
     }
 }

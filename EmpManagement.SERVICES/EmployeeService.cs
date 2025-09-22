@@ -1,64 +1,47 @@
-﻿using EmpManagement.Core;
-using MongoDB.Driver;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using EmpManagement.Core; // Adjust namespace if needed
 
-
-
-namespace EmployeeManagement.Services
+public interface IEmployeeService
 {
-    public class EmployeeService : IEmployeeService
+    Task<List<Employee>> GetAllAsync();
+    Task<Employee> GetByIdAsync(string id);
+    Task CreateAsync(Employee employee);
+    Task UpdateAsync(string id, Employee employee);
+    Task DeleteAsync(string id);
+}
+
+public class EmployeeService : IEmployeeService
+{
+    private readonly Repository _repository;
+
+    public EmployeeService(Repository repository)
     {
-        private readonly IMongoCollection<Employee> _employee;
+        _repository = repository;
+    }
 
-        public EmployeeService(IStoreDatabase settings, IMongoClient mongoclient)
-        {
-            var database = mongoclient.GetDatabase(settings.DatabaseName);
-            _employee = database.GetCollection<Employee>(settings.EmployeeCollectionName);
-        }
+    public Task<List<Employee>> GetAllAsync()
+    {
+        return _repository.GetAllEmployeesAsync();
+    }
 
-        public Employee Create(Employee newEmployee)
-        {
-            newEmployee.ID = null; // Let MongoDB generate the _id
-            _employee.InsertOne(newEmployee);
-            return newEmployee;
-        }
+    public Task<Employee> GetByIdAsync(string id)
+    {
+        return _repository.GetEmployeeByIdAsync(id);
+    }
 
-        public List<Employee> Get()
-        {
-            return _employee.Find(student => true).ToList();
-        }
+    public Task CreateAsync(Employee employee)
+    {
+        return _repository.CreateEmployeeAsync(employee);
+    }
 
-        public Employee GetEmployee(int id)
-        {
-            throw new NotImplementedException();
-        }
+    public Task UpdateAsync(string id, Employee employee)
+    {
+        return _repository.UpdateEmployeeAsync(id, employee);
+    }
 
-        public void Update(string id, Employee updatedEmployee)
-        {
-            updatedEmployee.ID = id; // Ensure the ID is correct and valid
-            _employee.ReplaceOne(employee => employee.ID == id, updatedEmployee);
-        }
-
-        public void Remove(string id)
-        {
-            _employee.DeleteOne(employee => employee.ID == id);
-        }
-
-        public Employee Get(string id)
-        {
-            return _employee.Find(employee => employee.ID == id).FirstOrDefault();
-        }
-
-        public void Delete(Employee newEmployee)
-        {
-            if (newEmployee == null || string.IsNullOrEmpty(newEmployee.ID))
-                throw new ArgumentException("Invalid employee to delete.");
-
-            _employee.DeleteOne(employee => employee.ID == newEmployee.ID);
-        }
+    public Task DeleteAsync(string id)
+    {
+        return _repository.DeleteEmployeeAsync(id);
     }
 }

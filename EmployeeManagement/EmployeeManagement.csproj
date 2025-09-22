@@ -11,4 +11,10 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\EmpManagement.Core\EmpManagement.Core.csproj" />
+    <ProjectReference Include="..\EmpManagement.INFRA\EmpManagement.INFRA.csproj" />
+    <ProjectReference Include="..\EmpManagement.SERVICES\EmpManagement.SERVICES.csproj" />
+  </ItemGroup>
+
 </Project>
