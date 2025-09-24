@@ -1,32 +1,73 @@
 ﻿using MongoDB.Driver;
-using Microsoft.Extensions.Options;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using EmpManagement.Core;
+using EmpManagement.INFRA;
+using Microsoft.Extensions.Logging;
 
-public class Repository
+public class Repository : IRepository
 {
     private readonly IMongoCollection<Employee> _employees;
+    private ILogger<Repository> @object;
 
-    public Repository(IOptions<EmployeeStoreDBSettings> settings)
+    public Repository(IMongoDatabase database)
     {
-        var client = new MongoClient(settings.Value.ConnectionString);
-        var database = client.GetDatabase(settings.Value.DatabaseName);
-        _employees = database.GetCollection<Employee>(settings.Value.EmployeeCollectionName);
+        _employees = database.GetCollection<Employee>("Employees");
     }
 
-    public async Task<List<Employee>> GetAllEmployeesAsync() =>
-        await _employees.Find(emp => true).ToListAsync();
+    public Repository(IMongoDatabase database, ILogger<Repository> @object) : this(database)
+    {
+        this.@object = @object;
+    }
 
-    public async Task<Employee> GetEmployeeByIdAsync(string id) =>
-        await _employees.Find(emp => emp.Id == id).FirstOrDefaultAsync();
+    public async Task<List<Employee>> GetAllEmployeesAsync()
+    {
+        return await _employees.Find(_ => true).ToListAsync();
+    }
 
-    public async Task CreateEmployeeAsync(Employee employee) =>
+    public async Task<Employee> GetEmployeeByIdAsync(string id)
+    {
+        return await _employees.Find(e => e.Id == id).FirstOrDefaultAsync();
+    }
+
+    public async Task<Employee> CreateEmployeeAsync(Employee employee)
+    {
         await _employees.InsertOneAsync(employee);
+        return employee;
+    }
 
-    public async Task UpdateEmployeeAsync(string id, Employee employee) =>
-        await _employees.ReplaceOneAsync(emp => emp.Id == id, employee);
+    public async Task UpdateEmployeeAsync(string id, Employee employee)
+    {
+        await _employees.ReplaceOneAsync(e => e.Id == id, employee);
+    }
 
-    public async Task DeleteEmployeeAsync(string id) =>
-        await _employees.DeleteOneAsync(emp => emp.Id == id);
+    public async Task DeleteEmployeeAsync(string id)
+    {
+        await _employees.DeleteOneAsync(e => e.Id == id);
+    }
+
+    public Task<IEnumerable<Employee>> GetAll()
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<List<Employee>> GetInactiveEmployeesAsync()
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<List<Employee>> GetEmployeesByDepartmentAsync(string department)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<List<Employee>> GetEmployeesBySalaryAsync(double salary, bool includeEqual)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<List<Employee>> GetEmployeesByNameAsync(string name)
+    {
+        throw new NotImplementedException();
+    }
 }

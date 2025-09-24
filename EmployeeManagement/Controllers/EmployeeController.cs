@@ -1,69 +1,107 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using MongoDB.Bson;
+using EmpManagement.Core;
+using EmployeeManagement.Services;
 
 [ApiController]
 [Route("api/[controller]")]
 public class EmployeeController : ControllerBase
 {
     private readonly IEmployeeService _employeeService;
+    private readonly ILogger<EmployeeController> _logger;
 
-    public EmployeeController(IEmployeeService employeeService)
+    public EmployeeController(IEmployeeService employeeService, ILogger<EmployeeController> logger)
     {
         _employeeService = employeeService;
+        _logger = logger;
     }
 
-    // GET api/employee
+    // GET: api/employee
     [HttpGet]
-    public async Task<ActionResult<List<Employee>>> Get()
+    public async Task<IActionResult> GetAll()
     {
+        _logger.LogInformation("Fetching all employees");
         var employees = await _employeeService.GetAllAsync();
+        _logger.LogInformation("Fetched {Count} employees", employees.Count);
         return Ok(employees);
     }
 
-    // GET api/employee/{id}
+    // GET: api/employee/{id}
     [HttpGet("{id}")]
-    public async Task<ActionResult<Employee>> Get(string id)
+    public async Task<IActionResult> GetById(string id)
     {
+        _logger.LogInformation("Fetching employee with Id: {Id}", id);
         var employee = await _employeeService.GetByIdAsync(id);
         if (employee == null)
+        {
+            _logger.LogWarning("Employee not found: {Id}", id);
             return NotFound();
+        }
+
+        _logger.LogInformation("Employee found: {Name}", employee.Name);
         return Ok(employee);
     }
 
-    // POST api/employee
+    // POST: api/employee
     [HttpPost]
-    public async Task<IActionResult> Post([FromBody] Employee employee)
+    public async Task<IActionResult> Create([FromBody] Employee employee)
     {
         if (employee == null)
-            return BadRequest("Employee data is required.");
+        {
+            _logger.LogWarning("Attempted to create a null employee");
+            return BadRequest();
+        }
 
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+        _logger.LogInformation("Creating a new employee: {Name}", employee.Name);
+        var createdEmployee = await _employeeService.AddAsync(employee);
+        if (createdEmployee == null)
+        {
+            _logger.LogError("Failed to create employee");
+            return BadRequest();
+        }
 
-        // Validate Id format is a valid MongoDB ObjectId
-        if (!ObjectId.TryParse(employee.Id, out _))
-            return BadRequest("Invalid Id format.");
-
-        await _employeeService.CreateAsync(employee);
-
-        return CreatedAtAction(nameof(Get), new { id = employee.Id }, employee);
+        _logger.LogInformation("Employee created successfully with Id: {Id}", createdEmployee.Id);
+        return CreatedAtAction(nameof(GetById), new { id = createdEmployee.Id }, createdEmployee);
     }
 
-    // PUT api/employee/{id}
+    // PUT: api/employee/{id}
     [HttpPut("{id}")]
-    public async Task<IActionResult> Put(string id, [FromBody] Employee employee)
+    public async Task<IActionResult> Update(string id, [FromBody] Employee employee)
     {
-        await _employeeService.UpdateAsync(id, employee);
+        if (employee == null)
+        {
+            _logger.LogWarning("Null employee update attempted");
+            return BadRequest();
+        }
+
+        var existingEmployee = await _employeeService.GetByIdAsync(id);
+        if (existingEmployee == null)
+        {
+            _logger.LogWarning("Employee not found: {Id}", id);
+            return NotFound();
+        }
+
+        employee.Id = id;
+        await _employeeService.UpdateAsync(employee);
+        _logger.LogInformation("Employee updated successfully: {Id}", id);
         return NoContent();
     }
 
-    // DELETE api/employee/{id}
+    // DELETE: api/employee/{id}
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(string id)
     {
+        var existingEmployee = await _employeeService.GetByIdAsync(id);
+        if (existingEmployee == null)
+        {
+            _logger.LogWarning("Employee not found for deletion: {Id}", id);
+            return NotFound();
+        }
+
         await _employeeService.DeleteAsync(id);
+        _logger.LogInformation("Employee deleted: {Id}", id);
         return NoContent();
     }
 }

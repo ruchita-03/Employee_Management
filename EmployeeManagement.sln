@@ -3,13 +3,21 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36414.22
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmployeeManagement", "EmployeeManagement\EmployeeManagement.csproj", "{D66E0A7A-0B96-49D7-B128-7282599E8350}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmployeeManagement.API", "EmployeeManagement\EmployeeManagement.API.csproj", "{D66E0A7A-0B96-49D7-B128-7282599E8350}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmpManagement.Core", "EmpManagement.Core\EmpManagement.Core.csproj", "{1293A93A-0D61-4CF7-BEB3-1EDB8095080A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmpManagement.INFRA", "EmpManagement.INFRA\EmpManagement.INFRA.csproj", "{68CE5300-1A54-4834-8E9D-774D6A3EBDE0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmpManagement.SERVICES", "EmpManagement.SERVICES\EmpManagement.SERVICES.csproj", "{FC3E4902-66D8-4E33-8ECC-F5A12FCDC03C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmpManagementAPI.Tests", "EmpManagement.Tests\EmpManagementAPI.Tests.csproj", "{902C4167-09E7-42C1-968E-0E1F6C19161A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceTest", "ServiceTest\ServiceTest.csproj", "{B606610A-460F-4395-BF82-54F194F1517C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmployeeController.Tests", "EmployeeController.Tests\EmployeeController.Tests.csproj", "{4D42399D-1F3E-4640-AC1B-D859D7349AFB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmpManagement.repository.Test", "EmpManagement.repository.Test\EmpManagement.repository.Test.csproj", "{891C0123-34C3-4546-B15F-60990C034D21}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +41,22 @@ Global
 		{FC3E4902-66D8-4E33-8ECC-F5A12FCDC03C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FC3E4902-66D8-4E33-8ECC-F5A12FCDC03C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FC3E4902-66D8-4E33-8ECC-F5A12FCDC03C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{902C4167-09E7-42C1-968E-0E1F6C19161A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{902C4167-09E7-42C1-968E-0E1F6C19161A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{902C4167-09E7-42C1-968E-0E1F6C19161A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{902C4167-09E7-42C1-968E-0E1F6C19161A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B606610A-460F-4395-BF82-54F194F1517C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B606610A-460F-4395-BF82-54F194F1517C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B606610A-460F-4395-BF82-54F194F1517C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B606610A-460F-4395-BF82-54F194F1517C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D42399D-1F3E-4640-AC1B-D859D7349AFB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D42399D-1F3E-4640-AC1B-D859D7349AFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D42399D-1F3E-4640-AC1B-D859D7349AFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D42399D-1F3E-4640-AC1B-D859D7349AFB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{891C0123-34C3-4546-B15F-60990C034D21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{891C0123-34C3-4546-B15F-60990C034D21}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{891C0123-34C3-4546-B15F-60990C034D21}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{891C0123-34C3-4546-B15F-60990C034D21}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
