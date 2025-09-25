@@ -1,0 +1,1591 @@
+===== EmployeeManagement\Program.cs =====
+using EmployeeManagement.Services;
+using EmpManagement.Core;
+using EmpManagement.INFRA;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
+using MongoDB.Driver;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.OpenApi.Models;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// JWT Authentication
+var key = Encoding.ASCII.GetBytes(builder.Configuration["Jwt:Key"]);
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.RequireHttpsMetadata = false;
+    options.SaveToken = true;
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(key),
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ClockSkew = TimeSpan.Zero
+    };
+});
+
+// MongoDB settings
+builder.Services.Configure<EmployeeStoreDBSettings>(
+    builder.Configuration.GetSection("EmployeeStoreDBSettings"));
+
+// Register MongoDB database
+builder.Services.AddSingleton<IMongoDatabase>(sp =>
+{
+    var settings = sp.GetRequiredService<IOptions<EmployeeStoreDBSettings>>().Value;
+    var client = new MongoClient(settings.ConnectionString);
+    return client.GetDatabase(settings.DatabaseName);
+});
+
+// Repository & service
+builder.Services.AddScoped<IRepository, Repository>();
+builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+
+// Logging
+builder.Services.AddLogging();
+builder.Logging.AddProvider(new SimpleFileLoggerProvider("Logs/log.txt"));
+
+// Controllers & Swagger
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Employee API", Version = "v1" });
+
+    // JWT auth in Swagger
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "JWT Authorization header using Bearer scheme"
+    });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
+            },
+            new string[] {}
+        }
+    });
+});
+
+var app = builder.Build();
+
+// Swagger in development
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+app.UseHttpsRedirection();
+app.UseAuthentication(); // Enable authentication
+app.UseAuthorization();
+
+app.MapControllers();
+app.Run();
+
+===== EmployeeManagement\Controllers\AuthController.cs =====
+﻿
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.IdentityModel.Tokens;
+    using System;
+    using System.IdentityModel.Tokens.Jwt;
+    using System.Security.Claims;
+    using System.Text;
+
+    namespace EmployeeManagement.API.Controllers
+    {
+    [ApiController]
+    [Route("api/auth")] // explicitly lowercase
+    public class AuthController : ControllerBase
+    {
+        private readonly IConfiguration _configuration;
+
+        public AuthController(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
+        [HttpPost("register")]
+        public IActionResult Register([FromBody] LoginModel model)
+        {
+            // Example: Store user in a simple in-memory dictionary (replace with DB in real use)
+            if (_users.ContainsKey(model.Username))
+                return BadRequest("User already exists");
+
+            // For demo, store plain text (use hashing in real apps)
+            _users[model.Username] = model.Password;
+            return Ok("User registered successfully");
+        }
+
+        private static readonly Dictionary<string, string> _users = new Dictionary<string, string>
+{
+    { "User1", "password1" },
+    { "User2", "password2" },
+    { "User3", "password3" }
+};
+
+        [HttpPost("login")]
+        public IActionResult Login([FromBody] LoginModel model)
+        {
+            if (_users.TryGetValue(model.Username, out var password) && password == model.Password)
+            {
+                var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]);
+                var tokenDescriptor = new SecurityTokenDescriptor
+                {
+                    Subject = new ClaimsIdentity(new[]
+                    {
+                new Claim(ClaimTypes.Name, model.Username),
+                new Claim(ClaimTypes.Role, GetUserRole(model.Username))
+            }),
+                    Expires = DateTime.UtcNow.AddHours(1),
+                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                };
+
+                var token = new JwtSecurityTokenHandler().CreateToken(tokenDescriptor);
+                return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token) });
+            }
+
+            return Unauthorized("Invalid username or password");
+        }
+
+        [HttpGet("validate")]
+        public IActionResult ValidateToken(string token)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]);
+
+            try
+            {
+                tokenHandler.ValidateToken(token, new TokenValidationParameters
+                {
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero
+                }, out SecurityToken validatedToken);
+
+                return Ok("Token is valid");
+            }
+            catch
+            {
+                return Unauthorized("Invalid token");
+            }
+        }
+
+
+        private string GetUserRole(string username) =>
+            username switch
+            {
+                "User1" => "Admin",
+                "User2" => "Moderator",
+                "User3" => "ReadOnly",
+                _ => "ReadOnly"
+            };
+
+        public class LoginModel
+        {
+            public string Username { get; set; }
+            public string Password { get; set; }
+        }
+    }
+
+    }  
+
+
+
+===== EmployeeManagement\Controllers\EmployeeController.cs =====
+﻿using EmployeeManagement.Services;
+using EmpManagement.Core;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace EmployeeManagement.API.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    [Authorize] // JWT required for all endpoints
+    public class EmployeeController : ControllerBase
+    {
+        private readonly IEmployeeService _employeeService;
+        private readonly ILogger<EmployeeController> _logger;
+
+        public EmployeeController(IEmployeeService employeeService, ILogger<EmployeeController> logger)
+        {
+            _employeeService = employeeService;
+            _logger = logger;
+        }
+
+        // GET: api/employee
+        [HttpGet]
+        [Authorize(Roles = "Admin,Moderator,ReadOnly")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> GetAll()
+        {
+            _logger.LogInformation("Fetching all employees");
+            try
+            {
+                var employees = await _employeeService.GetAllAsync();
+                _logger.LogInformation("Fetched {Count} employees", employees.Count);
+                return Ok(employees);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error fetching all employees");
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+        // GET: api/employee/{id}
+        [HttpGet("{id}")]
+        [Authorize(Roles = "Admin,ReadOnly")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> GetById(string id)
+        {
+            _logger.LogInformation("Fetching employee with Id: {Id}", id);
+            try
+            {
+                var employee = await _employeeService.GetByIdAsync(id);
+                if (employee == null)
+                {
+                    _logger.LogWarning("Employee not found: {Id}", id);
+                    return NotFound();
+                }
+
+                _logger.LogInformation("Employee found: {Name}", employee.Name);
+                return Ok(employee);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error fetching employee: {Id}", id);
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+        // POST: api/employee
+        [HttpPost]
+        [Authorize(Roles = "Admin,Moderator")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> Create([FromBody] Employee employee)
+        {
+            if (employee == null)
+            {
+                _logger.LogWarning("Attempted to create a null employee");
+                return BadRequest();
+            }
+
+            _logger.LogInformation("Creating a new employee: {Name}", employee.Name);
+            try
+            {
+                var createdEmployee = await _employeeService.AddAsync(employee);
+                if (createdEmployee == null)
+                {
+                    _logger.LogError("Failed to create employee");
+                    return BadRequest("Could not create employee");
+                }
+
+                _logger.LogInformation("Employee created successfully with Id: {Id}", createdEmployee.Id);
+                return CreatedAtAction(nameof(GetById), new { id = createdEmployee.Id }, createdEmployee);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error creating employee: {Name}", employee.Name);
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+        // PUT: api/employee/{id}
+        [HttpPut("{id}")]
+        [Authorize(Roles = "Admin,Moderator")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> Update(string id, [FromBody] Employee employee)
+        {
+            if (employee == null)
+            {
+                _logger.LogWarning("Null employee update attempted");
+                return BadRequest();
+            }
+
+            try
+            {
+                var existingEmployee = await _employeeService.GetByIdAsync(id);
+                if (existingEmployee == null)
+                {
+                    _logger.LogWarning("Employee not found: {Id}", id);
+                    return NotFound();
+                }
+
+                employee.Id = id;
+                await _employeeService.UpdateAsync(employee);
+                _logger.LogInformation("Employee updated successfully: {Id}", id);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating employee: {Id}", id);
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+        // DELETE: api/employee/{id}
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> Delete(string id)
+        {
+            try
+            {
+                var existingEmployee = await _employeeService.GetByIdAsync(id);
+                if (existingEmployee == null)
+                {
+                    _logger.LogWarning("Employee not found for deletion: {Id}", id);
+                    return NotFound();
+                }
+
+                await _employeeService.DeleteAsync(id);
+                _logger.LogInformation("Employee deleted: {Id}", id);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting employee: {Id}", id);
+                return StatusCode(500, "Internal server error");
+            }
+        }
+    }
+}
+
+===== EmpManagement.Core\Employee.cs =====
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using System;
+using System.ComponentModel.DataAnnotations;
+
+public class Employee
+{
+    // MongoDB ObjectId as string
+    [BsonId]
+    [BsonRepresentation(BsonType.ObjectId)]
+    public string Id { get; set; }
+
+    [Required(ErrorMessage = "Name is required.")]
+    [StringLength(100, MinimumLength = 2, ErrorMessage = "Name should be between 2 and 100 characters.")]
+    [BsonElement("Name")]
+    public string Name { get; set; }
+
+    [Required(ErrorMessage = "Department is required.")]
+    [StringLength(50, ErrorMessage = "Department name should not exceed 50 characters.")]
+    [BsonElement("Department")]
+    public string Department { get; set; }
+
+    [Required(ErrorMessage = "Email is required.")]
+    [EmailAddress(ErrorMessage = "Invalid email address.")]
+    [BsonElement("Email")]
+    public string Email { get; set; }
+
+    [Required(ErrorMessage = "Date of Joining is required.")]
+    [DataType(DataType.Date)]
+    [BsonElement("DateOfJoining")]
+    public DateTime DateOfJoining { get; set; }
+
+    [Required(ErrorMessage = "Job Title is required.")]
+    [StringLength(100, ErrorMessage = "Job Title should not exceed 100 characters.")]
+    [BsonElement("JobTitle")]
+    public string JobTitle { get; set; }
+
+    [Required(ErrorMessage = "Salary is required.")]
+    [Range(0, double.MaxValue, ErrorMessage = "Salary must be a positive number.")]
+    [BsonElement("Salary")]
+    public double Salary { get; set; }
+
+    [BsonElement("IsActive")]
+    public bool IsActive { get; set; }
+
+    public object RenderToBsonDocument()
+    {
+        throw new NotImplementedException();
+    }
+}
+
+===== EmpManagement.Core\EmployeeStoreDBSettings.cs =====
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace EmpManagement.Core
+{
+    public class EmployeeStoreDBSettings
+    {
+        // MongoDB connection string
+        public string ConnectionString { get; set; }
+
+        // Name of the MongoDB database
+        public string DatabaseName { get; set; }
+
+        // Name of the collection where Employee documents are stored
+        public string EmployeeCollectionName { get; set; }
+    }
+
+}
+
+===== EmpManagement.Core\IStoreDatabase.cs =====
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace EmpManagement.Core
+{
+    public interface IStoreDatabase
+    {
+        string EmployeeCollectionName { get; set; }
+        string ConnectionString { get; set; }
+        string DatabaseName { get; set; }
+
+    }
+}
+
+
+===== EmpManagement.Core\LoginModel.cs =====
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace EmpManagement.Core
+{
+    public class LoginModel
+    {
+        public string Username { get; set; }
+        public string Password { get; set; }
+    }
+}
+
+===== EmpManagement.Core\User.cs =====
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace EmpManagement.Core
+{
+    public class User
+    {
+        public string Id { get; set; } // Optional for DB
+        public string Username { get; set; }
+        public string Password { get; set; } // In real apps, store hashed passwords
+        public string Role { get; set; }     // Admin, Moderator, ReadOnly
+    }
+}
+
+===== EmpManagement.Core\SimpleFileLogger.cs =====
+﻿using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace EmpManagement.Core
+{
+    public class SimpleFileLogger : ILogger
+    {
+        private readonly string _filePath;
+        private readonly string _categoryName;
+        private static readonly object _lock = new();
+
+        public SimpleFileLogger(string categoryName, string filePath)
+        {
+            _categoryName = categoryName;
+            _filePath = filePath;
+        }
+
+        public IDisposable BeginScope<TState>(TState state) => null!;
+
+        public bool IsEnabled(LogLevel logLevel) =>
+            logLevel >= LogLevel.Information;
+
+        public void Log<TState>(LogLevel logLevel, EventId eventId,
+            TState state, Exception? exception, Func<TState, Exception?, string> formatter)
+        {
+            if (!IsEnabled(logLevel)) return;
+
+            var message = $"{DateTime.UtcNow:u} [{logLevel}] {_categoryName}: {formatter(state, exception)}";
+            if (exception != null)
+                message += Environment.NewLine + exception;
+
+            lock (_lock)
+            {
+                File.AppendAllText(_filePath, message + Environment.NewLine);
+            }
+        }
+    }
+}
+
+===== EmpManagement.Core\SimpleFileLoggerProvider.cs =====
+﻿using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace EmpManagement.Core
+{
+    public class SimpleFileLoggerProvider : ILoggerProvider
+    {
+        private readonly string _filePath;
+
+        public SimpleFileLoggerProvider(string filePath)
+        {
+            _filePath = filePath;
+        }
+
+        public ILogger CreateLogger(string categoryName)
+        {
+            return new SimpleFileLogger(categoryName, _filePath);
+        }
+
+        public void Dispose()
+        {
+        }
+    }
+}
+
+===== EmpManagement.INFRA\IRepository.cs =====
+﻿using EmpManagement.Core;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace EmpManagement.INFRA
+{
+    public interface IRepository
+    {
+        Task<IEnumerable<Employee>> GetAll();
+        Task<Employee> CreateEmployeeAsync(Employee employee);
+
+        Task<List<Employee>> GetAllEmployeesAsync();
+        Task<Employee> GetEmployeeByIdAsync(string id);
+      
+        Task UpdateEmployeeAsync(string id, Employee employee);
+        Task DeleteEmployeeAsync(string id);
+        Task<List<Employee>> GetInactiveEmployeesAsync();
+        Task<List<Employee>> GetEmployeesByDepartmentAsync(string department);
+        Task<List<Employee>> GetEmployeesBySalaryAsync(double salary, bool includeEqual);
+        Task<List<Employee>> GetEmployeesByNameAsync(string name);
+    }
+}
+
+===== EmpManagement.INFRA\Repository.cs =====
+﻿using MongoDB.Driver;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using EmpManagement.Core;
+using EmpManagement.INFRA;
+using Microsoft.Extensions.Logging;
+
+public class Repository : IRepository
+{
+    private readonly IMongoCollection<Employee> _employees;
+    private ILogger<Repository> @object;
+
+    public Repository(IMongoDatabase database)
+    {
+        _employees = database.GetCollection<Employee>("Employees");
+    }
+
+    public Repository(IMongoDatabase database, ILogger<Repository> @object) : this(database)
+    {
+        this.@object = @object;
+    }
+
+    public async Task<List<Employee>> GetAllEmployeesAsync()
+    {
+        return await _employees.Find(_ => true).ToListAsync();
+    }
+
+    public async Task<Employee> GetEmployeeByIdAsync(string id)
+    {
+        return await _employees.Find(e => e.Id == id).FirstOrDefaultAsync();
+    }
+
+    public async Task<Employee> CreateEmployeeAsync(Employee employee)
+    {
+        await _employees.InsertOneAsync(employee);
+        return employee;
+    }
+
+    public async Task UpdateEmployeeAsync(string id, Employee employee)
+    {
+        await _employees.ReplaceOneAsync(e => e.Id == id, employee);
+    }
+
+    public async Task DeleteEmployeeAsync(string id)
+    {
+        await _employees.DeleteOneAsync(e => e.Id == id);
+    }
+
+    public Task<IEnumerable<Employee>> GetAll()
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<List<Employee>> GetInactiveEmployeesAsync()
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<List<Employee>> GetEmployeesByDepartmentAsync(string department)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<List<Employee>> GetEmployeesBySalaryAsync(double salary, bool includeEqual)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<List<Employee>> GetEmployeesByNameAsync(string name)
+    {
+        throw new NotImplementedException();
+    }
+}
+
+===== EmpManagement.SERVICES\IEmployeeService.cs =====
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using EmpManagement.Core;
+
+namespace EmployeeManagement.Services
+{
+    public interface IEmployeeService
+    {
+        Task<List<Employee>> GetAllAsync();
+        Task<Employee> GetByIdAsync(string id);
+        Task<Employee> AddAsync(Employee employee); // Updated from Task to Task<Employee>
+        Task UpdateAsync(Employee employee);
+        Task DeleteAsync(string id);
+        Task<List<Employee>> GetInactiveEmployeesAsync();
+        Task<List<Employee>> GetEmployeesByDepartmentAsync(string department);
+        Task<List<Employee>> GetEmployeesBySalaryAsync(double salary, bool includeEqual);
+        Task<List<Employee>> GetEmployeesByNameAsync(string name);
+    }
+}
+===== EmpManagement.SERVICES\EmployeeService.cs =====
+﻿using EmployeeManagement.Services;
+using EmpManagement.Core;
+using EmpManagement.INFRA;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace EmployeeManagement.Services
+{
+    public class EmployeeService : IEmployeeService
+    {
+        private readonly IRepository _repository;
+
+        public EmployeeService(IRepository repository)
+        {
+            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+        }
+
+        public Task<List<Employee>> GetAllAsync()
+        {
+            if (_repository == null) throw new InvalidOperationException("Repository is not initialized.");
+            return _repository.GetAllEmployeesAsync();
+        }
+
+        public Task<Employee> GetByIdAsync(string id)
+        {
+            if (string.IsNullOrEmpty(id)) throw new ArgumentException("Id cannot be null or empty.", nameof(id));
+            if (_repository == null) throw new InvalidOperationException("Repository is not initialized.");
+            return _repository.GetEmployeeByIdAsync(id);
+        }
+
+        public Task<Employee> AddAsync(Employee employee)
+        {
+            if (employee == null) throw new ArgumentNullException(nameof(employee));
+            if (_repository == null) throw new InvalidOperationException("Repository is not initialized.");
+            return _repository.CreateEmployeeAsync(employee);
+        }
+
+        public Task UpdateAsync(Employee employee)
+        {
+            if (employee == null) throw new ArgumentNullException(nameof(employee));
+            if (string.IsNullOrEmpty(employee.Id)) throw new ArgumentException("Employee Id cannot be null or empty.", nameof(employee));
+            if (_repository == null) throw new InvalidOperationException("Repository is not initialized.");
+            return _repository.UpdateEmployeeAsync(employee.Id, employee);
+        }
+
+        public Task DeleteAsync(string id)
+        {
+            if (string.IsNullOrEmpty(id)) throw new ArgumentException("Id cannot be null or empty.", nameof(id));
+            if (_repository == null) throw new InvalidOperationException("Repository is not initialized.");
+            return _repository.DeleteEmployeeAsync(id);
+        }
+
+        public Task<List<Employee>> GetInactiveEmployeesAsync()
+        {
+            if (_repository == null) throw new InvalidOperationException("Repository is not initialized.");
+            return _repository.GetInactiveEmployeesAsync();
+        }
+
+        public Task<List<Employee>> GetEmployeesByDepartmentAsync(string department)
+        {
+            if (string.IsNullOrEmpty(department))
+                throw new ArgumentException("Department cannot be null or empty.", nameof(department));
+            if (_repository == null) throw new InvalidOperationException("Repository is not initialized.");
+            return _repository.GetEmployeesByDepartmentAsync(department);
+        }
+
+        public Task<List<Employee>> GetEmployeesBySalaryAsync(double salary, bool includeEqual)
+        {
+            if (salary < 0)
+                throw new ArgumentException("Salary cannot be negative.", nameof(salary));
+            if (_repository == null) throw new InvalidOperationException("Repository is not initialized.");
+            return _repository.GetEmployeesBySalaryAsync(salary, includeEqual);
+        }
+
+        public Task<List<Employee>> GetEmployeesByNameAsync(string name)
+        {
+            if (string.IsNullOrEmpty(name))
+                throw new ArgumentException("Name cannot be null or empty.", nameof(name));
+            if (_repository == null) throw new InvalidOperationException("Repository is not initialized.");
+            return _repository.GetEmployeesByNameAsync(name);
+        }
+    }
+}
+===== EmployeeController.Tests\EmployeeControllerTests.cs =====
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Moq;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Xunit;
+using EmpManagement.Core;
+using EmployeeManagement.Services;
+
+namespace EmployeeManagement.Services.Tests
+{
+    public class EmployeeControllerTests
+    {
+        // Mock of the employee service interface used to simulate data operations
+        private readonly Mock<IEmployeeService> _mockService;
+        // The controller instance that is being tested, with mocked dependencies injected
+        private readonly EmployeeController _controller;
+
+        public EmployeeControllerTests()
+        {
+            _mockService = new Mock<IEmployeeService>();
+            // Inject mock service and a mock logger into the controller
+            _controller = new EmployeeController(_mockService.Object, Mock.Of<ILogger<EmployeeController>>());
+        }
+
+        [Fact]
+        // Test that GetAll method returns an HTTP 200 OK response with a list of employees
+        // It mocks the service to return one employee and verifies the controller returns that employee as expected
+        public async Task GetAll_ReturnsOkWithEmployees()
+        {
+            var employees = new List<Employee> { new Employee { Id = "1", Name = "User" } };
+            _mockService.Setup(s => s.GetAllAsync()).ReturnsAsync(employees);
+
+            var result = await _controller.GetAll();
+
+            // Check if the result is HTTP 200 OK
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            // Check if the returned value is a list of employees
+            var returnEmployees = Assert.IsAssignableFrom<List<Employee>>(okResult.Value);
+            // Assert the list has exactly one employee
+            Assert.Single(returnEmployees);
+            // Assert the employee name matches the mocked data
+            Assert.Equal("User", returnEmployees[0].Name);
+        }
+
+        [Fact]
+        // Test that GetById returns HTTP 200 OK with the employee data when an existing ID is requested
+        public async Task GetById_ExistingId_ReturnsOk()
+        {
+            var employee = new Employee { Id = "1", Name = "User" };
+            _mockService.Setup(s => s.GetByIdAsync("1")).ReturnsAsync(employee);
+
+            var result = await _controller.GetById("1");
+
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            var returnEmployee = Assert.IsType<Employee>(okResult.Value);
+            Assert.Equal("User", returnEmployee.Name);
+        }
+
+        [Fact]
+        // Test that GetById returns HTTP 404 Not Found when a non-existing ID is requested
+        public async Task GetById_NonExistingId_ReturnsNotFound()
+        {
+            _mockService.Setup(s => s.GetByIdAsync("999")).ReturnsAsync((Employee)null);
+
+            var result = await _controller.GetById("999");
+
+            Assert.IsType<NotFoundResult>(result);
+        }
+
+        [Fact]
+        // Test that Create adds a valid employee and returns HTTP 201 CreatedAtAction pointing to the new employee
+        public async Task Create_ValidEmployee_ReturnsCreatedAtAction()
+        {
+            var employee = new Employee { Id = "1", Name = "User" };
+            _mockService.Setup(s => s.AddAsync(employee)).ReturnsAsync(employee);
+
+            var result = await _controller.Create(employee);
+
+            var createdAtResult = Assert.IsType<CreatedAtActionResult>(result);
+            // Check if the action name used for the location header is "GetById"
+            Assert.Equal("GetById", createdAtResult.ActionName);
+            // Verify the employee object returned matches the input
+            Assert.Equal(employee, createdAtResult.Value);
+            // Check if the route value "id" matches the employee's ID
+            Assert.Equal(employee.Id, createdAtResult.RouteValues["id"]);
+        }
+
+        [Fact]
+        // Test that Create returns HTTP 400 Bad Request when a null employee is passed
+        public async Task Create_NullEmployee_ReturnsBadRequest()
+        {
+            var result = await _controller.Create(null);
+
+            Assert.IsType<BadRequestResult>(result);
+        }
+
+        [Fact]
+        // Test that Create returns BadRequest if the service fails to add the employee (returns null)
+        public async Task Create_FailedService_ReturnsBadRequest()
+        {
+            var employee = new Employee { Id = "1", Name = "User" };
+            _mockService.Setup(s => s.AddAsync(employee)).ReturnsAsync((Employee)null);
+
+            var result = await _controller.Create(employee);
+
+            Assert.IsType<BadRequestResult>(result);
+        }
+
+        [Fact]
+        // Test that Update returns HTTP 204 No Content if updating an existing employee succeeds
+        public async Task Update_ExistingId_ReturnsNoContent()
+        {
+            var employee = new Employee { Id = "1", Name = "Updated User" };
+            _mockService.Setup(s => s.GetByIdAsync("1")).ReturnsAsync(new Employee { Id = "1", Name = "Old User" });
+            _mockService.Setup(s => s.UpdateAsync(employee)).Returns(Task.CompletedTask);
+
+            var result = await _controller.Update("1", employee);
+
+            Assert.IsType<NoContentResult>(result);
+        }
+
+        [Fact]
+        // Test that Update returns BadRequest when the input employee is null
+        public async Task Update_NullEmployee_ReturnsBadRequest()
+        {
+            _mockService.Setup(s => s.GetByIdAsync("1")).ReturnsAsync(new Employee { Id = "1", Name = "User" });
+
+            var result = await _controller.Update("1", null);
+
+            Assert.IsType<BadRequestResult>(result);
+        }
+
+        [Fact]
+        // Test that Update returns NotFound when trying to update a non-existing employee
+        public async Task Update_NonExistingId_ReturnsNotFound()
+        {
+            var employee = new Employee { Id = "1", Name = "Updated User" };
+            _mockService.Setup(s => s.GetByIdAsync("1")).ReturnsAsync((Employee)null);
+
+            var result = await _controller.Update("1", employee);
+
+            Assert.IsType<NotFoundResult>(result);
+        }
+
+        [Fact]
+        // Test that Delete returns No Content if deletion of an existing employee succeeds
+        public async Task Delete_ExistingId_ReturnsNoContent()
+        {
+            _mockService.Setup(s => s.GetByIdAsync("1")).ReturnsAsync(new Employee { Id = "1", Name = "User" });
+            _mockService.Setup(s => s.DeleteAsync("1")).Returns(Task.CompletedTask);
+
+            var result = await _controller.Delete("1");
+
+            Assert.IsType<NoContentResult>(result);
+        }
+
+        [Fact]
+        // Test that Delete returns NotFound when attempting to delete a non-existing employee
+        public async Task Delete_NonExistingId_ReturnsNotFound()
+        {
+            _mockService.Setup(s => s.GetByIdAsync("999")).ReturnsAsync((Employee)null);
+
+            var result = await _controller.Delete("999");
+
+            Assert.IsType<NotFoundResult>(result);
+        }
+    }
+
+}
+
+===== EmpManagement.repository.Test\RepositoryTests.cs =====
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using EmpManagement.Core;
+using EmpManagement.INFRA;
+using Microsoft.Extensions.Logging;
+using Moq;
+using MongoDB.Driver;
+using Xunit;
+
+namespace EmpManagement.INFRA.Tests
+{
+    public class RepositoryTests
+    {
+        private readonly Mock<IMongoCollection<Employee>> _mockCollection;
+        private readonly Mock<ILogger<Repository>> _mockLogger;
+        private readonly Repository _repository;
+        private readonly Mock<IMongoDatabase> _mockDatabase;
+
+        public RepositoryTests()
+        {
+            _mockCollection = new Mock<IMongoCollection<Employee>>();
+            _mockLogger = new Mock<ILogger<Repository>>();
+            _mockDatabase = new Mock<IMongoDatabase>();
+            _mockDatabase = new Mock<IMongoDatabase>();
+            _mockDatabase.Setup(db => db.GetCollection<Employee>("Employees", null))
+                .Returns(_mockCollection.Object);
+            _repository = new Repository(_mockDatabase.Object, _mockLogger.Object);
+        }
+
+        // Helper to mock async cursor
+        private IAsyncCursor<T> MockCursor<T>(IEnumerable<T> items)
+        {
+            var mockCursor = new Mock<IAsyncCursor<T>>();
+            mockCursor.Setup(c => c.Current).Returns(items);
+            mockCursor.SetupSequence(c => c.MoveNextAsync(It.IsAny<CancellationToken>()))
+                .ReturnsAsync(true) // First call returns true to indicate items are available
+                .ReturnsAsync(false); // Second call returns false to end iteration
+            mockCursor.Setup(c => c.Dispose()).Verifiable();
+            return mockCursor.Object;
+        }
+
+        [Fact]
+        public async Task GetAllEmployeesAsync_ReturnsAllEmployees()
+        {
+            // Arrange
+            var employees = new List<Employee>
+            {
+                new Employee { Id = "1", Name = "John", Salary = 50000, Department = "IT", IsActive = true },
+                new Employee { Id = "2", Name = "Jane", Salary = 60000, Department = "HR", IsActive = true }
+            };
+            var mockCursor = MockCursor(employees);
+            _mockCollection.Setup(c => c.FindAsync(It.IsAny<FilterDefinition<Employee>>(), It.IsAny<FindOptions<Employee>>(), default))
+                .ReturnsAsync(mockCursor);
+
+            // Act
+            var result = await _repository.GetAllEmployeesAsync();
+
+            // Assert
+            Assert.Equal(2, result.Count);
+            Assert.Equal("John", result[0].Name);
+            Assert.Equal("Jane", result[1].Name);
+            _mockLogger.VerifyLog(LogLevel.Information, Times.Exactly(2));
+        }
+
+        [Fact]
+        public async Task GetAllEmployeesAsync_EmptyCollection_ReturnsEmptyList()
+        {
+            // Arrange
+            var employees = new List<Employee>();
+            var mockCursor = MockCursor(employees);
+            _mockCollection.Setup(c => c.FindAsync(It.IsAny<FilterDefinition<Employee>>(), It.IsAny<FindOptions<Employee>>(), default))
+                .ReturnsAsync(mockCursor);
+
+            // Act
+            var result = await _repository.GetAllEmployeesAsync();
+
+            // Assert
+            Assert.Empty(result);
+            _mockLogger.VerifyLog(LogLevel.Information, Times.Exactly(2));
+        }
+
+        [Fact]
+        public async Task GetEmployeeByIdAsync_ValidId_ReturnsEmployee()
+        {
+            // Arrange
+            var employee = new Employee { Id = "1", Name = "John", Salary = 50000, Department = "IT", IsActive = true };
+            var mockCursor = MockCursor(new[] { employee });
+            _mockCollection.Setup(c => c.FindAsync(It.Is<FilterDefinition<Employee>>(f => f == Builders<Employee>.Filter.Eq(e => e.Id, "1")), It.IsAny<FindOptions<Employee>>(), default))
+                .ReturnsAsync(mockCursor);
+
+            // Act
+            var result = await _repository.GetEmployeeByIdAsync("1");
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal("John", result.Name);
+            _mockLogger.VerifyLog(LogLevel.Information, Times.Exactly(2));
+        }
+
+        [Fact]
+        public async Task GetEmployeeByIdAsync_InvalidId_ReturnsNull()
+        {
+            // Arrange
+            var mockCursor = MockCursor(new Employee[] { });
+            _mockCollection.Setup(c => c.FindAsync(It.Is<FilterDefinition<Employee>>(f => f == Builders<Employee>.Filter.Eq(e => e.Id, "999")), It.IsAny<FindOptions<Employee>>(), default))
+                .ReturnsAsync(mockCursor);
+
+            // Act
+            var result = await _repository.GetEmployeeByIdAsync("999");
+
+            // Assert
+            Assert.Null(result);
+            _mockLogger.VerifyLog(LogLevel.Warning, Times.Once());
+        }
+
+        [Fact]
+        public async Task CreateEmployeeAsync_InsertsEmployee()
+        {
+            // Arrange
+            var employee = new Employee { Id = "1", Name = "John", Salary = 50000, Department = "IT", IsActive = true };
+            _mockCollection.Setup(c => c.InsertOneAsync(employee, null, default)).Returns(Task.CompletedTask);
+
+            // Act
+            await _repository.CreateEmployeeAsync(employee);
+
+            // Assert
+            _mockCollection.Verify(c => c.InsertOneAsync(employee, null, default), Times.Once());
+            _mockLogger.VerifyLog(LogLevel.Information, Times.Exactly(2));
+        }
+
+        [Fact]
+        public async Task UpdateEmployeeAsync_ValidId_UpdatesEmployee()
+        {
+            // Arrange
+            var employee = new Employee { Id = "1", Name = "John Updated", Salary = 60000, Department = "IT", IsActive = true };
+            var replaceResult = new ReplaceOneResult.Acknowledged(1, 1, null);
+            _mockCollection.Setup(c => c.ReplaceOneAsync(It.Is<FilterDefinition<Employee>>(f => f == Builders<Employee>.Filter.Eq(e => e.Id, "1")), employee, It.IsAny<ReplaceOptions>(), default))
+                .ReturnsAsync(replaceResult);
+
+            // Act
+            await _repository.UpdateEmployeeAsync("1", employee);
+
+            // Assert
+            _mockCollection.Verify(c => c.ReplaceOneAsync(It.IsAny<FilterDefinition<Employee>>(), employee, It.IsAny<ReplaceOptions>(), default), Times.Once());
+            _mockLogger.VerifyLog(LogLevel.Information, Times.Exactly(2));
+        }
+
+        [Fact]
+        public async Task UpdateEmployeeAsync_InvalidId_LogsWarning()
+        {
+            // Arrange
+            var employee = new Employee { Id = "999", Name = "John", Salary = 50000, Department = "IT", IsActive = true };
+            var replaceResult = new ReplaceOneResult.Acknowledged(0, 0, null);
+            _mockCollection.Setup(c => c.ReplaceOneAsync(It.Is<FilterDefinition<Employee>>(f => f == Builders<Employee>.Filter.Eq(e => e.Id, "999")), employee, It.IsAny<ReplaceOptions>(), default))
+                .ReturnsAsync(replaceResult);
+
+            // Act
+            await _repository.UpdateEmployeeAsync("999", employee);
+
+            // Assert
+            _mockLogger.VerifyLog(LogLevel.Warning, Times.Once());
+        }
+
+        [Fact]
+        public async Task DeleteEmployeeAsync_ValidId_DeletesEmployee()
+        {
+            // Arrange
+            var deleteResult = new DeleteResult.Acknowledged(1);
+            _mockCollection.Setup(c => c.DeleteOneAsync(It.Is<FilterDefinition<Employee>>(f => f == Builders<Employee>.Filter.Eq(e => e.Id, "1")), default))
+                .ReturnsAsync(deleteResult);
+
+            // Act
+            await _repository.DeleteEmployeeAsync("1");
+
+            // Assert
+            _mockCollection.Verify(c => c.DeleteOneAsync(It.IsAny<FilterDefinition<Employee>>(), default), Times.Once());
+            _mockLogger.VerifyLog(LogLevel.Information, Times.Exactly(2));
+        }
+
+        [Fact]
+        public async Task DeleteEmployeeAsync_InvalidId_LogsWarning()
+        {
+            // Arrange
+            var deleteResult = new DeleteResult.Acknowledged(0);
+            _mockCollection.Setup(c => c.DeleteOneAsync(It.Is<FilterDefinition<Employee>>(f => f == Builders<Employee>.Filter.Eq(e => e.Id, "999")), default))
+                .ReturnsAsync(deleteResult);
+
+            // Act
+            await _repository.DeleteEmployeeAsync("999");
+
+            // Assert
+            _mockLogger.VerifyLog(LogLevel.Warning, Times.Once());
+        }
+
+        [Fact]
+        public async Task GetEmployeesBySalaryAsync_GreaterThan_ReturnsMatchingEmployees()
+        {
+            // Arrange
+            var employees = new List<Employee>
+            {
+                new Employee { Id = "1", Name = "John", Salary = 60000, Department = "IT", IsActive = true },
+                new Employee { Id = "2", Name = "Jane", Salary = 40000, Department = "HR", IsActive = true }
+            };
+            var mockCursor = MockCursor(employees.Where(e => e.Salary > 50000));
+            _mockCollection.Setup(c => c.FindAsync(It.Is<FilterDefinition<Employee>>(f => f == Builders<Employee>.Filter.Gt(e => e.Salary, 50000)), It.IsAny<FindOptions<Employee>>(), default))
+                .ReturnsAsync(mockCursor);
+
+            // Act
+            var result = await _repository.GetEmployeesBySalaryAsync(50000, true);
+
+            // Assert
+            Assert.Single(result);
+            Assert.Equal("John", result[0].Name);
+            _mockLogger.VerifyLog(LogLevel.Information, Times.Exactly(2));
+        }
+
+        [Fact]
+        public async Task GetEmployeesBySalaryAsync_LessThanOrEqual_ReturnsMatchingEmployees()
+        {
+            // Arrange
+            var employees = new List<Employee>
+            {
+                new Employee { Id = "1", Name = "John", Salary = 60000, Department = "IT", IsActive = true },
+                new Employee { Id = "2", Name = "Jane", Salary = 40000, Department = "HR", IsActive = true }
+            };
+            var mockCursor = MockCursor(employees.Where(e => e.Salary <= 50000));
+            _mockCollection.Setup(c => c.FindAsync(It.Is<FilterDefinition<Employee>>(f => f == Builders<Employee>.Filter.Lte(e => e.Salary, 50000)), It.IsAny<FindOptions<Employee>>(), default))
+                .ReturnsAsync(mockCursor);
+
+            // Act
+            var result = await _repository.GetEmployeesBySalaryAsync(50000, false);
+
+            // Assert
+            Assert.Single(result);
+            Assert.Equal("Jane", result[0].Name);
+            _mockLogger.VerifyLog(LogLevel.Information, Times.Exactly(2));
+        }
+
+        [Fact]
+        public async Task GetEmployeesByNameAsync_ReturnsMatchingEmployees()
+        {
+            // Arrange
+            var employees = new List<Employee>
+            {
+                new Employee { Id = "1", Name = "John Doe", Salary = 50000, Department = "IT", IsActive = true },
+                new Employee { Id = "2", Name = "Jane Doe", Salary = 60000, Department = "HR", IsActive = true }
+            };
+            var mockCursor = MockCursor(employees.Where(e => e.Name.Contains("John")));
+            _mockCollection.Setup(c => c.FindAsync(It.Is<FilterDefinition<Employee>>(f => f.RenderToBsonDocument().ToString().Contains("John", StringComparison.OrdinalIgnoreCase)), It.IsAny<FindOptions<Employee>>(), default))
+                .ReturnsAsync(mockCursor);
+
+            // Act
+            var result = await _repository.GetEmployeesByNameAsync("John");
+
+            // Assert
+            Assert.Single(result);
+            Assert.Equal("John Doe", result[0].Name);
+            _mockLogger.VerifyLog(LogLevel.Information, Times.Exactly(2));
+        }
+
+        [Fact]
+        public async Task GetInactiveEmployeesAsync_ReturnsInactiveEmployees()
+        {
+            // Arrange
+            var employees = new List<Employee>
+            {
+                new Employee { Id = "1", Name = "John", Salary = 50000, Department = "IT", IsActive = false },
+                new Employee { Id = "2", Name = "Jane", Salary = 60000, Department = "HR", IsActive = true }
+            };
+            var mockCursor = MockCursor(employees.Where(e => !e.IsActive));
+            _mockCollection.Setup(c => c.FindAsync(It.Is<FilterDefinition<Employee>>(f => f == Builders<Employee>.Filter.Eq(e => e.IsActive, false)), It.IsAny<FindOptions<Employee>>(), default))
+                .ReturnsAsync(mockCursor);
+
+            // Act
+            var result = await _repository.GetInactiveEmployeesAsync();
+
+            // Assert
+            Assert.Single(result);
+            Assert.Equal("John", result[0].Name);
+            _mockLogger.VerifyLog(LogLevel.Information, Times.Exactly(2));
+        }
+
+        [Fact]
+        public async Task GetEmployeesByDepartmentAsync_ReturnsMatchingEmployees()
+        {
+            // Arrange
+            var employees = new List<Employee>
+            {
+                new Employee { Id = "1", Name = "John", Salary = 50000, Department = "IT", IsActive = true },
+                new Employee { Id = "2", Name = "Jane", Salary = 60000, Department = "HR", IsActive = true }
+            };
+            var mockCursor = MockCursor(employees.Where(e => e.Department == "IT"));
+            _mockCollection.Setup(c => c.FindAsync(It.Is<FilterDefinition<Employee>>(f => f == Builders<Employee>.Filter.Eq(e => e.Department, "IT")), It.IsAny<FindOptions<Employee>>(), default))
+                .ReturnsAsync(mockCursor);
+
+            // Act
+            var result = await _repository.GetEmployeesByDepartmentAsync("IT");
+
+            // Assert
+            Assert.Single(result);
+            Assert.Equal("John", result[0].Name);
+            _mockLogger.VerifyLog(LogLevel.Information, Times.Exactly(2));
+        }
+    }
+
+    // Helper extension for verifying logger calls
+    public static class LoggerExtensions
+    {
+        public static void VerifyLog<T>(this Mock<ILogger<T>> logger, LogLevel level, Times times)
+        {
+            logger.Verify(
+                x => x.Log(
+                    It.Is<LogLevel>(l => l == level),
+                    It.IsAny<EventId>(),
+                    It.IsAny<It.IsAnyType>(),
+                    It.IsAny<Exception>(),
+                    It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+                times);
+        }
+    }
+}
+===== EmpManagement.Tests\EmployeeModelTests.cs =====
+﻿using System;
+using Xunit;
+
+public class EmployeeModelTests
+{
+    // This test verifies that all the properties of the Employee model can be assigned and read accurately.
+    [Fact]
+    public void EmployeeProperties_ShouldBeSetCorrectly()
+    {
+        var employee = new Employee
+        {
+            Id = "123",
+            Name = "John Doe",
+            Department = "Finance",
+            Email = "john.doe@example.com",
+            DateOfJoining = DateTime.Now,
+            JobTitle = "Accountant",
+            Salary = 50000,
+            IsActive = true
+        };
+
+        Assert.Equal("123", employee.Id);
+        Assert.Equal("John Doe", employee.Name);
+        Assert.Equal("Finance", employee.Department);
+        Assert.Equal("john.doe@example.com", employee.Email);
+        Assert.Equal("Accountant", employee.JobTitle);
+        Assert.Equal(50000, employee.Salary);
+        Assert.True(employee.IsActive);
+    }
+
+}
+
+===== ServiceTest\EmployeeServiceTests.cs =====
+using EmployeeManagement.Services;
+using EmpManagement.Core;
+using EmpManagement.INFRA;
+using Moq;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Xunit;
+
+namespace EmployeeManagement.Services.Tests
+{
+    public class EmployeeServiceTests
+    {
+        private readonly Mock<IRepository> _mockRepository;
+        private readonly EmployeeService _service;
+
+        public EmployeeServiceTests()
+        {
+            _mockRepository = new Mock<IRepository>();
+            _service = new EmployeeService(_mockRepository.Object);
+        }
+
+        [Fact]
+        // Tests that the EmployeeService constructor throws ArgumentNullException if the repository dependency is null
+        public void Constructor_WithNullRepository_ThrowsArgumentNullException()
+        {
+            var exception = Assert.Throws<ArgumentNullException>(() => new EmployeeService(null));
+            Assert.Equal("repository", exception.ParamName);
+        }
+
+        [Fact]
+        // Tests that GetAllAsync returns an empty list when the underlying repository returns no employees
+        public async Task GetAllAsync_WithEmptyRepository_ReturnsEmptyList()
+        {
+            _mockRepository.Setup(x => x.GetAllEmployeesAsync()).ReturnsAsync(new List<Employee>());
+
+            var result = await _service.GetAllAsync();
+
+            Assert.Empty(result);
+            _mockRepository.Verify(x => x.GetAllEmployeesAsync(), Times.Once);
+        }
+
+        [Fact]
+        // Tests that GetByIdAsync throws ArgumentException if passed a null ID and does not call repository method
+        public async Task GetByIdAsync_WithNullId_ThrowsArgumentException()
+        {
+            await Assert.ThrowsAsync<ArgumentException>(() => _service.GetByIdAsync(null));
+            _mockRepository.Verify(x => x.GetEmployeeByIdAsync(It.IsAny<string>()), Times.Never);
+        }
+
+        [Fact]
+        // Tests that GetByIdAsync throws ArgumentException if passed an empty ID string and does not call repository method
+        public async Task GetByIdAsync_WithEmptyId_ThrowsArgumentException()
+        {
+            await Assert.ThrowsAsync<ArgumentException>(() => _service.GetByIdAsync(""));
+            _mockRepository.Verify(x => x.GetEmployeeByIdAsync(It.IsAny<string>()), Times.Never);
+        }
+
+        [Fact]
+        // Tests that GetByIdAsync returns the employee object when given a valid ID and repository returns matching employee
+        public async Task GetByIdAsync_WithValidId_ReturnsEmployee()
+        {
+            var employee = new Employee { Id = "1", Name = "Test" };
+            _mockRepository.Setup(x => x.GetEmployeeByIdAsync("1")).ReturnsAsync(employee);
+
+            var result = await _service.GetByIdAsync("1");
+
+            Assert.Equal(employee, result);
+            _mockRepository.Verify(x => x.GetEmployeeByIdAsync("1"), Times.Once);
+        }
+
+        [Fact]
+        // Tests that AddAsync throws ArgumentNullException if the employee to add is null and does not call repository
+        public async Task AddAsync_WithNullEmployee_ThrowsArgumentNullException()
+        {
+            await Assert.ThrowsAsync<ArgumentNullException>(() => _service.AddAsync(null));
+            _mockRepository.Verify(x => x.CreateEmployeeAsync(It.IsAny<Employee>()), Times.Never);
+        }
+
+        [Fact]
+        // Tests that AddAsync returns the added employee when repository successfully creates it
+        public async Task AddAsync_WithValidEmployee_CallsRepositoryCreate()
+        {
+            var employee = new Employee { Id = "1", Name = "Test" };
+            _mockRepository.Setup(x => x.CreateEmployeeAsync(employee)).ReturnsAsync(employee);
+
+            var result = await _service.AddAsync(employee);
+
+            Assert.Equal(employee, result);
+            _mockRepository.Verify(x => x.CreateEmployeeAsync(employee), Times.Once);
+        }
+
+        [Fact]
+        // Tests that UpdateAsync throws ArgumentNullException if employee to update is null and does not call repository
+        public async Task UpdateAsync_WithNullEmployee_ThrowsArgumentNullException()
+        {
+            await Assert.ThrowsAsync<ArgumentNullException>(() => _service.UpdateAsync(null));
+            _mockRepository.Verify(x => x.UpdateEmployeeAsync(It.IsAny<string>(), It.IsAny<Employee>()), Times.Never);
+        }
+
+        [Fact]
+        // Tests that UpdateAsync throws ArgumentException if employee ID is empty and does not call repository
+        public async Task UpdateAsync_WithEmptyIdEmployee_ThrowsArgumentException()
+        {
+            var employee = new Employee { Id = "", Name = "Test" };
+            await Assert.ThrowsAsync<ArgumentException>(() => _service.UpdateAsync(employee));
+            _mockRepository.Verify(x => x.UpdateEmployeeAsync(It.IsAny<string>(), It.IsAny<Employee>()), Times.Never);
+        }
+
+        [Fact]
+        // Tests that DeleteAsync throws ArgumentException if given a null ID and does not call repository
+        public async Task DeleteAsync_WithNullId_ThrowsArgumentException()
+        {
+            await Assert.ThrowsAsync<ArgumentException>(() => _service.DeleteAsync(null));
+            _mockRepository.Verify(x => x.DeleteEmployeeAsync(It.IsAny<string>()), Times.Never);
+        }
+
+        [Fact]
+        // Tests that DeleteAsync throws ArgumentException if given an empty ID and does not call repository
+        public async Task DeleteAsync_WithEmptyId_ThrowsArgumentException()
+        {
+            await Assert.ThrowsAsync<ArgumentException>(() => _service.DeleteAsync(""));
+            _mockRepository.Verify(x => x.DeleteEmployeeAsync(It.IsAny<string>()), Times.Never);
+        }
+
+        [Fact]
+        // Tests that DeleteAsync calls repository to delete the employee when given a valid ID
+        public async Task DeleteAsync_WithValidId_CallsRepositoryDelete()
+        {
+            _mockRepository.Setup(x => x.DeleteEmployeeAsync("1")).Returns(Task.CompletedTask);
+
+            await _service.DeleteAsync("1");
+
+            _mockRepository.Verify(x => x.DeleteEmployeeAsync("1"), Times.Once);
+        }
+
+        [Fact]
+        // Tests that GetInactiveEmployeesAsync returns an empty list when the repository returns no inactive employees
+        public async Task GetInactiveEmployeesAsync_CallsRepository()
+        {
+            _mockRepository.Setup(x => x.GetInactiveEmployeesAsync()).ReturnsAsync(new List<Employee>());
+
+            var result = await _service.GetInactiveEmployeesAsync();
+
+            Assert.Empty(result);
+            _mockRepository.Verify(x => x.GetInactiveEmployeesAsync(), Times.Once);
+        }
+
+        [Fact]
+        // Tests that GetEmployeesByDepartmentAsync throws ArgumentException if department parameter is null and does not call repository
+        public async Task GetEmployeesByDepartmentAsync_WithNullDepartment_ThrowsArgumentException()
+        {
+            await Assert.ThrowsAsync<ArgumentException>(() => _service.GetEmployeesByDepartmentAsync(null));
+            _mockRepository.Verify(x => x.GetEmployeesByDepartmentAsync(It.IsAny<string>()), Times.Never);
+        }
+
+        [Fact]
+        // Tests that GetEmployeesByDepartmentAsync throws ArgumentException if department parameter is empty and does not call repository
+        public async Task GetEmployeesByDepartmentAsync_WithEmptyDepartment_ThrowsArgumentException()
+        {
+            await Assert.ThrowsAsync<ArgumentException>(() => _service.GetEmployeesByDepartmentAsync(""));
+            _mockRepository.Verify(x => x.GetEmployeesByDepartmentAsync(It.IsAny<string>()), Times.Never);
+        }
+
+        [Fact]
+        // Tests that GetEmployeesBySalaryAsync throws ArgumentException if salary parameter is negative and does not call repository
+        public async Task GetEmployeesBySalaryAsync_WithNegativeSalary_ThrowsArgumentException()
+        {
+            await Assert.ThrowsAsync<ArgumentException>(() => _service.GetEmployeesBySalaryAsync(-1, true));
+            _mockRepository.Verify(x => x.GetEmployeesBySalaryAsync(It.IsAny<double>(), It.IsAny<bool>()), Times.Never);
+        }
+
+        [Fact]
+        // Tests that GetEmployeesByNameAsync throws ArgumentException if name parameter is null and does not call repository
+        public async Task GetEmployeesByNameAsync_WithNullName_ThrowsArgumentException()
+        {
+            await Assert.ThrowsAsync<ArgumentException>(() => _service.GetEmployeesByNameAsync(null));
+            _mockRepository.Verify(x => x.GetEmployeesByNameAsync(It.IsAny<string>()), Times.Never);
+        }
+
+        [Fact]
+        // Tests that GetEmployeesByNameAsync throws ArgumentException if name parameter is empty and does not call repository
+        public async Task GetEmployeesByNameAsync_WithEmptyName_ThrowsArgumentException()
+        {
+            await Assert.ThrowsAsync<ArgumentException>(() => _service.GetEmployeesByNameAsync(""));
+            _mockRepository.Verify(x => x.GetEmployeesByNameAsync(It.IsAny<string>()), Times.Never);
+        }
+
+    }
+}
+===== EmployeeManagement\appsettings.json =====
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "AllowedHosts": "*",
+
+  "EmployeeStoreDBSettings": {
+    "EmployeeCollectionName": "EmpInfo",
+    "ConnectionString": "mongodb+srv://kbruchitha_db_user:QrRyTAxBI1Hu9nuP@cluster0.kpb9dh9.mongodb.net/",
+    "DatabaseName": "EmployeeDB"
+  },
+  "Jwt": {
+    "Key": "MySuperLongSecretKeyForJWTAuth1234!",
+    "Issuer": "YourApp",
+    "Audience": "YourAppUsers"
+  }
+
+
+}
+
+===== EmployeeManagement\appsettings.Development.json =====
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  }
+}
+
+===== EmployeeManagement\Properties\launchSettings.json =====
+﻿{
+  "$schema": "http://json.schemastore.org/launchsettings.json",
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:1737",
+      "sslPort": 44321
+    }
+  },
+  "profiles": {
+    "http": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": true,
+      "launchUrl": "swagger",
+      "applicationUrl": "http://localhost:5094",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "https": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": true,
+      "launchUrl": "swagger",
+      "applicationUrl": "https://localhost:7042;http://localhost:5094",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "IIS Express": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "launchUrl": "swagger",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}
+

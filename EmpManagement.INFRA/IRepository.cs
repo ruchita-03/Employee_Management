@@ -18,5 +18,8 @@ namespace EmpManagement.INFRA
         Task<List<Employee>> GetEmployeesByDepartmentAsync(string department);
         Task<List<Employee>> GetEmployeesBySalaryAsync(double salary, bool includeEqual);
         Task<List<Employee>> GetEmployeesByNameAsync(string name);
+
+        Task<User> GetUserByUsernameAsync(string username);
+        Task<User> CreateUserAsync(User user);
     }
 }

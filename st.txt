@@ -1,0 +1,919 @@
+Folder PATH listing
+Volume serial number is 7A22-A21B
+C:.
+¦   .gitignore
+¦   .gitignore.txt
+¦   EmployeeManagement.sln
+¦   st.txt
+¦   
++---.github
+¦   +---workflows
++---EmployeeController.Tests
+¦   ¦   EmployeeController.Tests.csproj
+¦   ¦   EmployeeControllerTests.cs
+¦   ¦   
+¦   +---bin
+¦   ¦   +---Debug
+¦   ¦       +---net8.0
+¦   ¦           ¦   appsettings.Development.json
+¦   ¦           ¦   appsettings.json
+¦   ¦           ¦   Castle.Core.dll
+¦   ¦           ¦   CoverletSourceRootsMapping_EmployeeController.Tests
+¦   ¦           ¦   DnsClient.dll
+¦   ¦           ¦   EmployeeController.Tests.deps.json
+¦   ¦           ¦   EmployeeController.Tests.dll
+¦   ¦           ¦   EmployeeController.Tests.pdb
+¦   ¦           ¦   EmployeeController.Tests.runtimeconfig.json
+¦   ¦           ¦   EmployeeManagement.API.deps.json
+¦   ¦           ¦   EmployeeManagement.API.dll
+¦   ¦           ¦   EmployeeManagement.API.exe
+¦   ¦           ¦   EmployeeManagement.API.pdb
+¦   ¦           ¦   EmployeeManagement.API.runtimeconfig.json
+¦   ¦           ¦   EmployeeManagement.API.staticwebassets.endpoints.json
+¦   ¦           ¦   EmpManagement.Core.dll
+¦   ¦           ¦   EmpManagement.Core.pdb
+¦   ¦           ¦   EmpManagement.INFRA.dll
+¦   ¦           ¦   EmpManagement.INFRA.pdb
+¦   ¦           ¦   EmpManagement.SERVICES.dll
+¦   ¦           ¦   EmpManagement.SERVICES.pdb
+¦   ¦           ¦   Microsoft.Extensions.DependencyInjection.Abstractions.dll
+¦   ¦           ¦   Microsoft.Extensions.DependencyInjection.dll
+¦   ¦           ¦   Microsoft.Extensions.Logging.Abstractions.dll
+¦   ¦           ¦   Microsoft.Extensions.Logging.dll
+¦   ¦           ¦   Microsoft.Extensions.Options.dll
+¦   ¦           ¦   Microsoft.Extensions.Primitives.dll
+¦   ¦           ¦   Microsoft.OpenApi.dll
+¦   ¦           ¦   Microsoft.TestPlatform.CommunicationUtilities.dll
+¦   ¦           ¦   Microsoft.TestPlatform.CoreUtilities.dll
+¦   ¦           ¦   Microsoft.TestPlatform.CrossPlatEngine.dll
+¦   ¦           ¦   Microsoft.TestPlatform.PlatformAbstractions.dll
+¦   ¦           ¦   Microsoft.TestPlatform.Utilities.dll
+¦   ¦           ¦   Microsoft.VisualStudio.CodeCoverage.Shim.dll
+¦   ¦           ¦   Microsoft.VisualStudio.TestPlatform.Common.dll
+¦   ¦           ¦   Microsoft.VisualStudio.TestPlatform.ObjectModel.dll
+¦   ¦           ¦   MongoDB.Bson.dll
+¦   ¦           ¦   MongoDB.Driver.dll
+¦   ¦           ¦   Moq.dll
+¦   ¦           ¦   Newtonsoft.Json.dll
+¦   ¦           ¦   NuGet.Frameworks.dll
+¦   ¦           ¦   SharpCompress.dll
+¦   ¦           ¦   Snappier.dll
+¦   ¦           ¦   Swashbuckle.AspNetCore.Swagger.dll
+¦   ¦           ¦   Swashbuckle.AspNetCore.SwaggerGen.dll
+¦   ¦           ¦   Swashbuckle.AspNetCore.SwaggerUI.dll
+¦   ¦           ¦   System.Diagnostics.DiagnosticSource.dll
+¦   ¦           ¦   testhost.dll
+¦   ¦           ¦   testhost.exe
+¦   ¦           ¦   xunit.abstractions.dll
+¦   ¦           ¦   xunit.assert.dll
+¦   ¦           ¦   xunit.core.dll
+¦   ¦           ¦   xunit.execution.dotnet.dll
+¦   ¦           ¦   xunit.runner.visualstudio.testadapter.dll
+¦   ¦           ¦   ZstdSharp.dll
+¦   ¦           ¦   
+¦   ¦           +---cs
+¦   ¦           ¦       Microsoft.TestPlatform.CommunicationUtilities.resources.dll
+¦   ¦           ¦       Microsoft.TestPlatform.CoreUtilities.resources.dll
+¦   ¦           ¦       Microsoft.TestPlatform.CrossPlatEngine.resources.dll
+¦   ¦           ¦       Microsoft.VisualStudio.TestPlatform.Common.resources.dll
+¦   ¦           ¦       Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll
+¦   ¦           ¦       
+¦   ¦           +---de
+¦   ¦           ¦       Microsoft.TestPlatform.CommunicationUtilities.resources.dll
+¦   ¦           ¦       Microsoft.TestPlatform.CoreUtilities.resources.dll
+¦   ¦           ¦       Microsoft.TestPlatform.CrossPlatEngine.resources.dll
+¦   ¦           ¦       Microsoft.VisualStudio.TestPlatform.Common.resources.dll
+¦   ¦           ¦       Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll
+¦   ¦           ¦       
+¦   ¦           +---es
+¦   ¦           ¦       Microsoft.TestPlatform.CommunicationUtilities.resources.dll
+¦   ¦           ¦       Microsoft.TestPlatform.CoreUtilities.resources.dll
+¦   ¦           ¦       Microsoft.TestPlatform.CrossPlatEngine.resources.dll
+¦   ¦           ¦       Microsoft.VisualStudio.TestPlatform.Common.resources.dll
+¦   ¦           ¦       Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll
+¦   ¦           ¦       
+¦   ¦           +---fr
+¦   ¦           ¦       Microsoft.TestPlatform.CommunicationUtilities.resources.dll
+¦   ¦           ¦       Microsoft.TestPlatform.CoreUtilities.resources.dll
+¦   ¦           ¦       Microsoft.TestPlatform.CrossPlatEngine.resources.dll
+¦   ¦           ¦       Microsoft.VisualStudio.TestPlatform.Common.resources.dll
+¦   ¦           ¦       Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll
+¦   ¦           ¦       
+¦   ¦           +---it
+¦   ¦           ¦       Microsoft.TestPlatform.CommunicationUtilities.resources.dll
+¦   ¦           ¦       Microsoft.TestPlatform.CoreUtilities.resources.dll
+¦   ¦           ¦       Microsoft.TestPlatform.CrossPlatEngine.resources.dll
+¦   ¦           ¦       Microsoft.VisualStudio.TestPlatform.Common.resources.dll
+¦   ¦           ¦       Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll
+¦   ¦           ¦       
+¦   ¦           +---ja
+¦   ¦           ¦       Microsoft.TestPlatform.CommunicationUtilities.resources.dll
+¦   ¦           ¦       Microsoft.TestPlatform.CoreUtilities.resources.dll
+¦   ¦           ¦       Microsoft.TestPlatform.CrossPlatEngine.resources.dll
+¦   ¦           ¦       Microsoft.VisualStudio.TestPlatform.Common.resources.dll
+¦   ¦           ¦       Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll
+¦   ¦           ¦       
+¦   ¦           +---ko
+¦   ¦           ¦       Microsoft.TestPlatform.CommunicationUtilities.resources.dll
+¦   ¦           ¦       Microsoft.TestPlatform.CoreUtilities.resources.dll
+¦   ¦           ¦       Microsoft.TestPlatform.CrossPlatEngine.resources.dll
+¦   ¦           ¦       Microsoft.VisualStudio.TestPlatform.Common.resources.dll
+¦   ¦           ¦       Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll
+¦   ¦           ¦       
+¦   ¦           +---pl
+¦   ¦           ¦       Microsoft.TestPlatform.CommunicationUtilities.resources.dll
+¦   ¦           ¦       Microsoft.TestPlatform.CoreUtilities.resources.dll
+¦   ¦           ¦       Microsoft.TestPlatform.CrossPlatEngine.resources.dll
+¦   ¦           ¦       Microsoft.VisualStudio.TestPlatform.Common.resources.dll
+¦   ¦           ¦       Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll
+¦   ¦           ¦       
+¦   ¦           +---pt-BR
+¦   ¦           ¦       Microsoft.TestPlatform.CommunicationUtilities.resources.dll
+¦   ¦           ¦       Microsoft.TestPlatform.CoreUtilities.resources.dll
+¦   ¦           ¦       Microsoft.TestPlatform.CrossPlatEngine.resources.dll
+¦   ¦           ¦       Microsoft.VisualStudio.TestPlatform.Common.resources.dll
+¦   ¦           ¦       Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll
+¦   ¦           ¦       
+¦   ¦           +---ru
+¦   ¦           ¦       Microsoft.TestPlatform.CommunicationUtilities.resources.dll
+¦   ¦           ¦       Microsoft.TestPlatform.CoreUtilities.resources.dll
+¦   ¦           ¦       Microsoft.TestPlatform.CrossPlatEngine.resources.dll
+¦   ¦           ¦       Microsoft.VisualStudio.TestPlatform.Common.resources.dll
+¦   ¦           ¦       Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll
+¦   ¦           ¦       
+¦   ¦           +---tr
+¦   ¦           ¦       Microsoft.TestPlatform.CommunicationUtilities.resources.dll
+¦   ¦           ¦       Microsoft.TestPlatform.CoreUtilities.resources.dll
+¦   ¦           ¦       Microsoft.TestPlatform.CrossPlatEngine.resources.dll
+¦   ¦           ¦       Microsoft.VisualStudio.TestPlatform.Common.resources.dll
+¦   ¦           ¦       Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll
+¦   ¦           ¦       
+¦   ¦           +---zh-Hans
+¦   ¦           ¦       Microsoft.TestPlatform.CommunicationUtilities.resources.dll
+¦   ¦           ¦       Microsoft.TestPlatform.CoreUtilities.resources.dll
+¦   ¦           ¦       Microsoft.TestPlatform.CrossPlatEngine.resources.dll
+¦   ¦           ¦       Microsoft.VisualStudio.TestPlatform.Common.resources.dll
+¦   ¦           ¦       Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll
+¦   ¦           ¦       
+¦   ¦           +---zh-Hant
+¦   ¦                   Microsoft.TestPlatform.CommunicationUtilities.resources.dll
+¦   ¦                   Microsoft.TestPlatform.CoreUtilities.resources.dll
+¦   ¦                   Microsoft.TestPlatform.CrossPlatEngine.resources.dll
+¦   ¦                   Microsoft.VisualStudio.TestPlatform.Common.resources.dll
+¦   ¦                   Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll
+¦   ¦                   
+¦   +---obj
+¦       ¦   EmployeeController.Tests.csproj.nuget.dgspec.json
+¦       ¦   EmployeeController.Tests.csproj.nuget.g.props
+¦       ¦   EmployeeController.Tests.csproj.nuget.g.targets
+¦       ¦   project.assets.json
+¦       ¦   project.nuget.cache
+¦       ¦   
+¦       +---Debug
+¦           +---net8.0
+¦               ¦   .NETCoreApp,Version=v8.0.AssemblyAttributes.cs
+¦               ¦   Employee.2397703E.Up2Date
+¦               ¦   EmployeeController.Tests.AssemblyInfo.cs
+¦               ¦   EmployeeController.Tests.AssemblyInfoInputs.cache
+¦               ¦   EmployeeController.Tests.assets.cache
+¦               ¦   EmployeeController.Tests.csproj.AssemblyReference.cache
+¦               ¦   EmployeeController.Tests.csproj.BuildWithSkipAnalyzers
+¦               ¦   EmployeeController.Tests.csproj.CoreCompileInputs.cache
+¦               ¦   EmployeeController.Tests.csproj.FileListAbsolute.txt
+¦               ¦   EmployeeController.Tests.dll
+¦               ¦   EmployeeController.Tests.GeneratedMSBuildEditorConfig.editorconfig
+¦               ¦   EmployeeController.Tests.genruntimeconfig.cache
+¦               ¦   EmployeeController.Tests.GlobalUsings.g.cs
+¦               ¦   EmployeeController.Tests.pdb
+¦               ¦   EmployeeController.Tests.sourcelink.json
+¦               ¦   
+¦               +---ref
+¦               ¦       EmployeeController.Tests.dll
+¦               ¦       
+¦               +---refint
+¦                       EmployeeController.Tests.dll
+¦                       
++---EmployeeManagement
+¦   ¦   appsettings.Development.json
+¦   ¦   appsettings.json
+¦   ¦   EmployeeManagement.API.csproj
+¦   ¦   EmployeeManagement.API.csproj.user
+¦   ¦   EmployeeManagement.http
+¦   ¦   Program.cs
+¦   ¦   
+¦   +---bin
+¦   ¦   +---Debug
+¦   ¦       +---net6.0
+¦   ¦       +---net8.0
+¦   ¦               appsettings.Development.json
+¦   ¦               appsettings.json
+¦   ¦               DnsClient.dll
+¦   ¦               EmployeeManagement.API.deps.json
+¦   ¦               EmployeeManagement.API.dll
+¦   ¦               EmployeeManagement.API.exe
+¦   ¦               EmployeeManagement.API.pdb
+¦   ¦               EmployeeManagement.API.runtimeconfig.json
+¦   ¦               EmployeeManagement.API.staticwebassets.endpoints.json
+¦   ¦               EmployeeManagement.deps.json
+¦   ¦               EmployeeManagement.dll
+¦   ¦               EmployeeManagement.exe
+¦   ¦               EmployeeManagement.pdb
+¦   ¦               EmployeeManagement.runtimeconfig.json
+¦   ¦               EmployeeManagement.staticwebassets.endpoints.json
+¦   ¦               EmpManagement.Core.dll
+¦   ¦               EmpManagement.Core.pdb
+¦   ¦               EmpManagement.INFRA.dll
+¦   ¦               EmpManagement.INFRA.pdb
+¦   ¦               EmpManagement.SERVICES.dll
+¦   ¦               EmpManagement.SERVICES.pdb
+¦   ¦               Microsoft.AspNetCore.Authentication.JwtBearer.dll
+¦   ¦               Microsoft.Extensions.DependencyInjection.Abstractions.dll
+¦   ¦               Microsoft.Extensions.DependencyInjection.dll
+¦   ¦               Microsoft.Extensions.Logging.Abstractions.dll
+¦   ¦               Microsoft.Extensions.Logging.dll
+¦   ¦               Microsoft.Extensions.Options.dll
+¦   ¦               Microsoft.Extensions.Primitives.dll
+¦   ¦               Microsoft.IdentityModel.Abstractions.dll
+¦   ¦               Microsoft.IdentityModel.JsonWebTokens.dll
+¦   ¦               Microsoft.IdentityModel.Logging.dll
+¦   ¦               Microsoft.IdentityModel.Protocols.dll
+¦   ¦               Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+¦   ¦               Microsoft.IdentityModel.Tokens.dll
+¦   ¦               Microsoft.OpenApi.dll
+¦   ¦               MongoDB.Bson.dll
+¦   ¦               MongoDB.Driver.dll
+¦   ¦               SharpCompress.dll
+¦   ¦               Snappier.dll
+¦   ¦               Swashbuckle.AspNetCore.Swagger.dll
+¦   ¦               Swashbuckle.AspNetCore.SwaggerGen.dll
+¦   ¦               Swashbuckle.AspNetCore.SwaggerUI.dll
+¦   ¦               System.Diagnostics.DiagnosticSource.dll
+¦   ¦               System.IdentityModel.Tokens.Jwt.dll
+¦   ¦               ZstdSharp.dll
+¦   ¦               
+¦   +---Controllers
+¦   ¦       AuthController.cs
+¦   ¦       EmployeeController.cs
+¦   ¦       
+¦   +---Logs
+¦   ¦       log.txt
+¦   ¦       
+¦   +---obj
+¦   ¦   ¦   EmployeeManagement.API.csproj.nuget.dgspec.json
+¦   ¦   ¦   EmployeeManagement.API.csproj.nuget.g.props
+¦   ¦   ¦   EmployeeManagement.API.csproj.nuget.g.targets
+¦   ¦   ¦   EmployeeManagement.csproj.nuget.dgspec.json
+¦   ¦   ¦   EmployeeManagement.csproj.nuget.g.props
+¦   ¦   ¦   EmployeeManagement.csproj.nuget.g.targets
+¦   ¦   ¦   project.assets.json
+¦   ¦   ¦   project.nuget.cache
+¦   ¦   ¦   
+¦   ¦   +---Debug
+¦   ¦       +---net6.0
+¦   ¦       ¦   ¦   EmployeeManagement.API.assets.cache
+¦   ¦       ¦   ¦   EmployeeManagement.API.csproj.FileListAbsolute.txt
+¦   ¦       ¦   ¦   
+¦   ¦       ¦   +---ref
+¦   ¦       ¦   +---refint
+¦   ¦       +---net8.0
+¦   ¦           ¦   .NETCoreApp,Version=v8.0.AssemblyAttributes.cs
+¦   ¦           ¦   ApiEndpoints.json
+¦   ¦           ¦   apphost.exe
+¦   ¦           ¦   Employee.3E9A2D24.Up2Date
+¦   ¦           ¦   Employee.61744648.Up2Date
+¦   ¦           ¦   EmployeeManagement.API.AssemblyInfo.cs
+¦   ¦           ¦   EmployeeManagement.API.AssemblyInfoInputs.cache
+¦   ¦           ¦   EmployeeManagement.API.assets.cache
+¦   ¦           ¦   EmployeeManagement.API.csproj.AssemblyReference.cache
+¦   ¦           ¦   EmployeeManagement.API.csproj.BuildWithSkipAnalyzers
+¦   ¦           ¦   EmployeeManagement.API.csproj.CoreCompileInputs.cache
+¦   ¦           ¦   EmployeeManagement.API.csproj.FileListAbsolute.txt
+¦   ¦           ¦   EmployeeManagement.API.dll
+¦   ¦           ¦   EmployeeManagement.API.GeneratedMSBuildEditorConfig.editorconfig
+¦   ¦           ¦   EmployeeManagement.API.genruntimeconfig.cache
+¦   ¦           ¦   EmployeeManagement.API.GlobalUsings.g.cs
+¦   ¦           ¦   EmployeeManagement.API.MvcApplicationPartsAssemblyInfo.cache
+¦   ¦           ¦   EmployeeManagement.API.MvcApplicationPartsAssemblyInfo.cs
+¦   ¦           ¦   EmployeeManagement.API.pdb
+¦   ¦           ¦   EmployeeManagement.API.sourcelink.json
+¦   ¦           ¦   EmployeeManagement.AssemblyInfo.cs
+¦   ¦           ¦   EmployeeManagement.AssemblyInfoInputs.cache
+¦   ¦           ¦   EmployeeManagement.assets.cache
+¦   ¦           ¦   EmployeeManagement.csproj.AssemblyReference.cache
+¦   ¦           ¦   EmployeeManagement.csproj.BuildWithSkipAnalyzers
+¦   ¦           ¦   EmployeeManagement.csproj.CoreCompileInputs.cache
+¦   ¦           ¦   EmployeeManagement.csproj.FileListAbsolute.txt
+¦   ¦           ¦   EmployeeManagement.dll
+¦   ¦           ¦   EmployeeManagement.GeneratedMSBuildEditorConfig.editorconfig
+¦   ¦           ¦   EmployeeManagement.genruntimeconfig.cache
+¦   ¦           ¦   EmployeeManagement.GlobalUsings.g.cs
+¦   ¦           ¦   EmployeeManagement.MvcApplicationPartsAssemblyInfo.cache
+¦   ¦           ¦   EmployeeManagement.MvcApplicationPartsAssemblyInfo.cs
+¦   ¦           ¦   EmployeeManagement.pdb
+¦   ¦           ¦   EmployeeManagement.sourcelink.json
+¦   ¦           ¦   rjsmcshtml.dswa.cache.json
+¦   ¦           ¦   rjsmrazor.dswa.cache.json
+¦   ¦           ¦   rpswa.dswa.cache.json
+¦   ¦           ¦   staticwebassets.build.endpoints.json
+¦   ¦           ¦   staticwebassets.build.json
+¦   ¦           ¦   staticwebassets.build.json.cache
+¦   ¦           ¦   staticwebassets.references.upToDateCheck.txt
+¦   ¦           ¦   staticwebassets.removed.txt
+¦   ¦           ¦   
+¦   ¦           +---EndpointInfo
+¦   ¦           ¦       EmployeeManagement.API.json
+¦   ¦           ¦       EmployeeManagement.API.OpenApiFiles.cache
+¦   ¦           ¦       EmployeeManagement.json
+¦   ¦           ¦       EmployeeManagement.OpenApiFiles.cache
+¦   ¦           ¦       
+¦   ¦           +---ref
+¦   ¦           ¦       EmployeeManagement.API.dll
+¦   ¦           ¦       EmployeeManagement.dll
+¦   ¦           ¦       
+¦   ¦           +---refint
+¦   ¦           ¦       EmployeeManagement.API.dll
+¦   ¦           ¦       EmployeeManagement.dll
+¦   ¦           ¦       
+¦   ¦           +---staticwebassets
+¦   +---Properties
+¦           launchSettings.json
+¦           
++---EmpManagement.Core
+¦   ¦   Employee.cs
+¦   ¦   EmployeeStoreDBSettings.cs
+¦   ¦   EmpManagement.Core.csproj
+¦   ¦   IStoreDatabase.cs
+¦   ¦   LoginModel.cs
+¦   ¦   SimpleFileLogger.cs
+¦   ¦   SimpleFileLoggerProvider.cs
+¦   ¦   User.cs
+¦   ¦   
+¦   +---bin
+¦   ¦   +---Debug
+¦   ¦       +---net8.0
+¦   ¦               EmpManagement.Core.deps.json
+¦   ¦               EmpManagement.Core.dll
+¦   ¦               EmpManagement.Core.pdb
+¦   ¦               
+¦   +---obj
+¦       ¦   EmpManagement.Core.csproj.nuget.dgspec.json
+¦       ¦   EmpManagement.Core.csproj.nuget.g.props
+¦       ¦   EmpManagement.Core.csproj.nuget.g.targets
+¦       ¦   project.assets.json
+¦       ¦   project.nuget.cache
+¦       ¦   
+¦       +---Debug
+¦           +---net8.0
+¦               ¦   .NETCoreApp,Version=v8.0.AssemblyAttributes.cs
+¦               ¦   EmpManagement.Core.AssemblyInfo.cs
+¦               ¦   EmpManagement.Core.AssemblyInfoInputs.cache
+¦               ¦   EmpManagement.Core.assets.cache
+¦               ¦   EmpManagement.Core.csproj.AssemblyReference.cache
+¦               ¦   EmpManagement.Core.csproj.BuildWithSkipAnalyzers
+¦               ¦   EmpManagement.Core.csproj.CoreCompileInputs.cache
+¦               ¦   EmpManagement.Core.csproj.FileListAbsolute.txt
+¦               ¦   EmpManagement.Core.dll
+¦               ¦   EmpManagement.Core.GeneratedMSBuildEditorConfig.editorconfig
+¦               ¦   EmpManagement.Core.GlobalUsings.g.cs
+¦               ¦   EmpManagement.Core.pdb
+¦               ¦   EmpManagement.Core.sourcelink.json
+¦               ¦   
+¦               +---ref
+¦               ¦       EmpManagement.Core.dll
+¦               ¦       
+¦               +---refint
+¦                       EmpManagement.Core.dll
+¦                       
++---EmpManagement.INFRA
+¦   ¦   EmpManagement.INFRA.csproj
+¦   ¦   IRepository.cs
+¦   ¦   Repository.cs
+¦   ¦   
+¦   +---bin
+¦   ¦   +---Debug
+¦   ¦       +---net8.0
+¦   ¦               EmpManagement.Core.dll
+¦   ¦               EmpManagement.Core.pdb
+¦   ¦               EmpManagement.INFRA.deps.json
+¦   ¦               EmpManagement.INFRA.dll
+¦   ¦               EmpManagement.INFRA.pdb
+¦   ¦               
+¦   +---obj
+¦       ¦   EmpManagement.INFRA.csproj.nuget.dgspec.json
+¦       ¦   EmpManagement.INFRA.csproj.nuget.g.props
+¦       ¦   EmpManagement.INFRA.csproj.nuget.g.targets
+¦       ¦   project.assets.json
+¦       ¦   project.nuget.cache
+¦       ¦   
+¦       +---Debug
+¦           +---net8.0
+¦               ¦   .NETCoreApp,Version=v8.0.AssemblyAttributes.cs
+¦               ¦   EmpManag.68FCCE9D.Up2Date
+¦               ¦   EmpManagement.INFRA.AssemblyInfo.cs
+¦               ¦   EmpManagement.INFRA.AssemblyInfoInputs.cache
+¦               ¦   EmpManagement.INFRA.assets.cache
+¦               ¦   EmpManagement.INFRA.csproj.AssemblyReference.cache
+¦               ¦   EmpManagement.INFRA.csproj.BuildWithSkipAnalyzers
+¦               ¦   EmpManagement.INFRA.csproj.CoreCompileInputs.cache
+¦               ¦   EmpManagement.INFRA.csproj.FileListAbsolute.txt
+¦               ¦   EmpManagement.INFRA.dll
+¦               ¦   EmpManagement.INFRA.GeneratedMSBuildEditorConfig.editorconfig
+¦               ¦   EmpManagement.INFRA.GlobalUsings.g.cs
+¦               ¦   EmpManagement.INFRA.pdb
+¦               ¦   EmpManagement.INFRA.sourcelink.json
+¦               ¦   
+¦               +---ref
+¦               ¦       EmpManagement.INFRA.dll
+¦               ¦       
+¦               +---refint
+¦                       EmpManagement.INFRA.dll
+¦                       
++---EmpManagement.repository.Test
+¦   ¦   EmpManagement.repository.Test.csproj
+¦   ¦   RepositoryTests.cs
+¦   ¦   
+¦   +---bin
+¦   ¦   +---Debug
+¦   ¦       +---net8.0
+¦   ¦           ¦   .msCoverageSourceRootsMapping_EmpManagement.repository.Test
+¦   ¦           ¦   CoverletSourceRootsMapping_EmpManagement.repository.Test
+¦   ¦           ¦   
+¦   ¦           +---cs
+¦   ¦           +---de
+¦   ¦           +---es
+¦   ¦           +---fr
+¦   ¦           +---it
+¦   ¦           +---ja
+¦   ¦           +---ko
+¦   ¦           +---pl
+¦   ¦           +---pt-BR
+¦   ¦           +---ru
+¦   ¦           +---tr
+¦   ¦           +---zh-Hans
+¦   ¦           +---zh-Hant
+¦   +---obj
+¦       ¦   EmpManagement.repository.Test.csproj.nuget.dgspec.json
+¦       ¦   EmpManagement.repository.Test.csproj.nuget.g.props
+¦       ¦   EmpManagement.repository.Test.csproj.nuget.g.targets
+¦       ¦   project.assets.json
+¦       ¦   project.nuget.cache
+¦       ¦   
+¦       +---Debug
+¦           +---net8.0
+¦               ¦   .NETCoreApp,Version=v8.0.AssemblyAttributes.cs
+¦               ¦   EmpManagement.repository.Test.AssemblyInfo.cs
+¦               ¦   EmpManagement.repository.Test.AssemblyInfoInputs.cache
+¦               ¦   EmpManagement.repository.Test.assets.cache
+¦               ¦   EmpManagement.repository.Test.csproj.AssemblyReference.cache
+¦               ¦   EmpManagement.repository.Test.csproj.BuildWithSkipAnalyzers
+¦               ¦   EmpManagement.repository.Test.csproj.CoreCompileInputs.cache
+¦               ¦   EmpManagement.repository.Test.csproj.FileListAbsolute.txt
+¦               ¦   EmpManagement.repository.Test.GeneratedMSBuildEditorConfig.editorconfig
+¦               ¦   EmpManagement.repository.Test.GlobalUsings.g.cs
+¦               ¦   EmpManagement.repository.Test.sourcelink.json
+¦               ¦   
+¦               +---ref
+¦               +---refint
++---EmpManagement.SERVICES
+¦   ¦   EmployeeService.cs
+¦   ¦   EmpManagement.SERVICES.csproj
+¦   ¦   IEmployeeService.cs
+¦   ¦   
+¦   +---bin
+¦   ¦   +---Debug
+¦   ¦       +---net8.0
+¦   ¦               EmpManagement.Core.dll
+¦   ¦               EmpManagement.Core.pdb
+¦   ¦               EmpManagement.INFRA.dll
+¦   ¦               EmpManagement.INFRA.pdb
+¦   ¦               EmpManagement.SERVICES.deps.json
+¦   ¦               EmpManagement.SERVICES.dll
+¦   ¦               EmpManagement.SERVICES.pdb
+¦   ¦               
+¦   +---obj
+¦       ¦   EmpManagement.SERVICES.csproj.nuget.dgspec.json
+¦       ¦   EmpManagement.SERVICES.csproj.nuget.g.props
+¦       ¦   EmpManagement.SERVICES.csproj.nuget.g.targets
+¦       ¦   project.assets.json
+¦       ¦   project.nuget.cache
+¦       ¦   
+¦       +---Debug
+¦           +---net8.0
+¦               ¦   .NETCoreApp,Version=v8.0.AssemblyAttributes.cs
+¦               ¦   EmpManag.0BF23592.Up2Date
+¦               ¦   EmpManagement.SERVICES.AssemblyInfo.cs
+¦               ¦   EmpManagement.SERVICES.AssemblyInfoInputs.cache
+¦               ¦   EmpManagement.SERVICES.assets.cache
+¦               ¦   EmpManagement.SERVICES.csproj.AssemblyReference.cache
+¦               ¦   EmpManagement.SERVICES.csproj.BuildWithSkipAnalyzers
+¦               ¦   EmpManagement.SERVICES.csproj.CoreCompileInputs.cache
+¦               ¦   EmpManagement.SERVICES.csproj.FileListAbsolute.txt
+¦               ¦   EmpManagement.SERVICES.dll
+¦               ¦   EmpManagement.SERVICES.GeneratedMSBuildEditorConfig.editorconfig
+¦               ¦   EmpManagement.SERVICES.GlobalUsings.g.cs
+¦               ¦   EmpManagement.SERVICES.pdb
+¦               ¦   EmpManagement.SERVICES.sourcelink.json
+¦               ¦   
+¦               +---ref
+¦               ¦       EmpManagement.SERVICES.dll
+¦               ¦       
+¦               +---refint
+¦                       EmpManagement.SERVICES.dll
+¦                       
++---EmpManagement.Tests
+¦   ¦   EmployeeModelTests.cs
+¦   ¦   EmpManagementAPI.Tests.csproj
+¦   ¦   
+¦   +---bin
+¦   ¦   +---Debug
+¦   ¦       +---net8.0
+¦   ¦           ¦   .msCoverageSourceRootsMapping_EmpManagementAPI.Tests
+¦   ¦           ¦   appsettings.Development.json
+¦   ¦           ¦   appsettings.json
+¦   ¦           ¦   Castle.Core.dll
+¦   ¦           ¦   CoverletSourceRootsMapping_EmpManagement.Tests
+¦   ¦           ¦   CoverletSourceRootsMapping_EmpManagementAPI.Tests
+¦   ¦           ¦   DnsClient.dll
+¦   ¦           ¦   EmployeeManagement.API.deps.json
+¦   ¦           ¦   EmployeeManagement.API.dll
+¦   ¦           ¦   EmployeeManagement.API.exe
+¦   ¦           ¦   EmployeeManagement.API.pdb
+¦   ¦           ¦   EmployeeManagement.API.runtimeconfig.json
+¦   ¦           ¦   EmployeeManagement.API.staticwebassets.endpoints.json
+¦   ¦           ¦   EmpManagement.Core.dll
+¦   ¦           ¦   EmpManagement.Core.pdb
+¦   ¦           ¦   EmpManagement.INFRA.dll
+¦   ¦           ¦   EmpManagement.INFRA.pdb
+¦   ¦           ¦   EmpManagement.SERVICES.dll
+¦   ¦           ¦   EmpManagement.SERVICES.pdb
+¦   ¦           ¦   EmpManagementAPI.Tests.deps.json
+¦   ¦           ¦   EmpManagementAPI.Tests.dll
+¦   ¦           ¦   EmpManagementAPI.Tests.pdb
+¦   ¦           ¦   EmpManagementAPI.Tests.runtimeconfig.json
+¦   ¦           ¦   Microsoft.Extensions.DependencyInjection.Abstractions.dll
+¦   ¦           ¦   Microsoft.Extensions.DependencyInjection.dll
+¦   ¦           ¦   Microsoft.Extensions.Logging.Abstractions.dll
+¦   ¦           ¦   Microsoft.Extensions.Logging.dll
+¦   ¦           ¦   Microsoft.Extensions.Options.dll
+¦   ¦           ¦   Microsoft.Extensions.Primitives.dll
+¦   ¦           ¦   Microsoft.OpenApi.dll
+¦   ¦           ¦   Microsoft.TestPlatform.CommunicationUtilities.dll
+¦   ¦           ¦   Microsoft.TestPlatform.CoreUtilities.dll
+¦   ¦           ¦   Microsoft.TestPlatform.CrossPlatEngine.dll
+¦   ¦           ¦   Microsoft.TestPlatform.PlatformAbstractions.dll
+¦   ¦           ¦   Microsoft.TestPlatform.Utilities.dll
+¦   ¦           ¦   Microsoft.VisualStudio.CodeCoverage.Shim.dll
+¦   ¦           ¦   Microsoft.VisualStudio.TestPlatform.Common.dll
+¦   ¦           ¦   Microsoft.VisualStudio.TestPlatform.ObjectModel.dll
+¦   ¦           ¦   MongoDB.Bson.dll
+¦   ¦           ¦   MongoDB.Driver.dll
+¦   ¦           ¦   Moq.dll
+¦   ¦           ¦   Newtonsoft.Json.dll
+¦   ¦           ¦   SharpCompress.dll
+¦   ¦           ¦   Snappier.dll
+¦   ¦           ¦   Swashbuckle.AspNetCore.Swagger.dll
+¦   ¦           ¦   Swashbuckle.AspNetCore.SwaggerGen.dll
+¦   ¦           ¦   Swashbuckle.AspNetCore.SwaggerUI.dll
+¦   ¦           ¦   System.Diagnostics.DiagnosticSource.dll
+¦   ¦           ¦   testhost.dll
+¦   ¦           ¦   testhost.exe
+¦   ¦           ¦   xunit.abstractions.dll
+¦   ¦           ¦   xunit.assert.dll
+¦   ¦           ¦   xunit.core.dll
+¦   ¦           ¦   xunit.execution.dotnet.dll
+¦   ¦           ¦   xunit.runner.visualstudio.testadapter.dll
+¦   ¦           ¦   ZstdSharp.dll
+¦   ¦           ¦   
+¦   ¦           +---cs
+¦   ¦           ¦       Microsoft.TestPlatform.CommunicationUtilities.resources.dll
+¦   ¦           ¦       Microsoft.TestPlatform.CoreUtilities.resources.dll
+¦   ¦           ¦       Microsoft.TestPlatform.CrossPlatEngine.resources.dll
+¦   ¦           ¦       Microsoft.VisualStudio.TestPlatform.Common.resources.dll
+¦   ¦           ¦       Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll
+¦   ¦           ¦       
+¦   ¦           +---de
+¦   ¦           ¦       Microsoft.TestPlatform.CommunicationUtilities.resources.dll
+¦   ¦           ¦       Microsoft.TestPlatform.CoreUtilities.resources.dll
+¦   ¦           ¦       Microsoft.TestPlatform.CrossPlatEngine.resources.dll
+¦   ¦           ¦       Microsoft.VisualStudio.TestPlatform.Common.resources.dll
+¦   ¦           ¦       Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll
+¦   ¦           ¦       
+¦   ¦           +---es
+¦   ¦           ¦       Microsoft.TestPlatform.CommunicationUtilities.resources.dll
+¦   ¦           ¦       Microsoft.TestPlatform.CoreUtilities.resources.dll
+¦   ¦           ¦       Microsoft.TestPlatform.CrossPlatEngine.resources.dll
+¦   ¦           ¦       Microsoft.VisualStudio.TestPlatform.Common.resources.dll
+¦   ¦           ¦       Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll
+¦   ¦           ¦       
+¦   ¦           +---fr
+¦   ¦           ¦       Microsoft.TestPlatform.CommunicationUtilities.resources.dll
+¦   ¦           ¦       Microsoft.TestPlatform.CoreUtilities.resources.dll
+¦   ¦           ¦       Microsoft.TestPlatform.CrossPlatEngine.resources.dll
+¦   ¦           ¦       Microsoft.VisualStudio.TestPlatform.Common.resources.dll
+¦   ¦           ¦       Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll
+¦   ¦           ¦       
+¦   ¦           +---it
+¦   ¦           ¦       Microsoft.TestPlatform.CommunicationUtilities.resources.dll
+¦   ¦           ¦       Microsoft.TestPlatform.CoreUtilities.resources.dll
+¦   ¦           ¦       Microsoft.TestPlatform.CrossPlatEngine.resources.dll
+¦   ¦           ¦       Microsoft.VisualStudio.TestPlatform.Common.resources.dll
+¦   ¦           ¦       Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll
+¦   ¦           ¦       
+¦   ¦           +---ja
+¦   ¦           ¦       Microsoft.TestPlatform.CommunicationUtilities.resources.dll
+¦   ¦           ¦       Microsoft.TestPlatform.CoreUtilities.resources.dll
+¦   ¦           ¦       Microsoft.TestPlatform.CrossPlatEngine.resources.dll
+¦   ¦           ¦       Microsoft.VisualStudio.TestPlatform.Common.resources.dll
+¦   ¦           ¦       Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll
+¦   ¦           ¦       
+¦   ¦           +---ko
+¦   ¦           ¦       Microsoft.TestPlatform.CommunicationUtilities.resources.dll
+¦   ¦           ¦       Microsoft.TestPlatform.CoreUtilities.resources.dll
+¦   ¦           ¦       Microsoft.TestPlatform.CrossPlatEngine.resources.dll
+¦   ¦           ¦       Microsoft.VisualStudio.TestPlatform.Common.resources.dll
+¦   ¦           ¦       Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll
+¦   ¦           ¦       
+¦   ¦           +---pl
+¦   ¦           ¦       Microsoft.TestPlatform.CommunicationUtilities.resources.dll
+¦   ¦           ¦       Microsoft.TestPlatform.CoreUtilities.resources.dll
+¦   ¦           ¦       Microsoft.TestPlatform.CrossPlatEngine.resources.dll
+¦   ¦           ¦       Microsoft.VisualStudio.TestPlatform.Common.resources.dll
+¦   ¦           ¦       Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll
+¦   ¦           ¦       
+¦   ¦           +---pt-BR
+¦   ¦           ¦       Microsoft.TestPlatform.CommunicationUtilities.resources.dll
+¦   ¦           ¦       Microsoft.TestPlatform.CoreUtilities.resources.dll
+¦   ¦           ¦       Microsoft.TestPlatform.CrossPlatEngine.resources.dll
+¦   ¦           ¦       Microsoft.VisualStudio.TestPlatform.Common.resources.dll
+¦   ¦           ¦       Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll
+¦   ¦           ¦       
+¦   ¦           +---ru
+¦   ¦           ¦       Microsoft.TestPlatform.CommunicationUtilities.resources.dll
+¦   ¦           ¦       Microsoft.TestPlatform.CoreUtilities.resources.dll
+¦   ¦           ¦       Microsoft.TestPlatform.CrossPlatEngine.resources.dll
+¦   ¦           ¦       Microsoft.VisualStudio.TestPlatform.Common.resources.dll
+¦   ¦           ¦       Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll
+¦   ¦           ¦       
+¦   ¦           +---tr
+¦   ¦           ¦       Microsoft.TestPlatform.CommunicationUtilities.resources.dll
+¦   ¦           ¦       Microsoft.TestPlatform.CoreUtilities.resources.dll
+¦   ¦           ¦       Microsoft.TestPlatform.CrossPlatEngine.resources.dll
+¦   ¦           ¦       Microsoft.VisualStudio.TestPlatform.Common.resources.dll
+¦   ¦           ¦       Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll
+¦   ¦           ¦       
+¦   ¦           +---zh-Hans
+¦   ¦           ¦       Microsoft.TestPlatform.CommunicationUtilities.resources.dll
+¦   ¦           ¦       Microsoft.TestPlatform.CoreUtilities.resources.dll
+¦   ¦           ¦       Microsoft.TestPlatform.CrossPlatEngine.resources.dll
+¦   ¦           ¦       Microsoft.VisualStudio.TestPlatform.Common.resources.dll
+¦   ¦           ¦       Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll
+¦   ¦           ¦       
+¦   ¦           +---zh-Hant
+¦   ¦                   Microsoft.TestPlatform.CommunicationUtilities.resources.dll
+¦   ¦                   Microsoft.TestPlatform.CoreUtilities.resources.dll
+¦   ¦                   Microsoft.TestPlatform.CrossPlatEngine.resources.dll
+¦   ¦                   Microsoft.VisualStudio.TestPlatform.Common.resources.dll
+¦   ¦                   Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll
+¦   ¦                   
+¦   +---obj
+¦       ¦   EmpManagement.Tests.csproj.nuget.dgspec.json
+¦       ¦   EmpManagement.Tests.csproj.nuget.g.props
+¦       ¦   EmpManagement.Tests.csproj.nuget.g.targets
+¦       ¦   EmpManagementAPI.Tests.csproj.nuget.dgspec.json
+¦       ¦   EmpManagementAPI.Tests.csproj.nuget.g.props
+¦       ¦   EmpManagementAPI.Tests.csproj.nuget.g.targets
+¦       ¦   project.assets.json
+¦       ¦   project.nuget.cache
+¦       ¦   
+¦       +---Debug
+¦           +---net8.0
+¦               ¦   .NETCoreApp,Version=v8.0.AssemblyAttributes.cs
+¦               ¦   EmpManag.AE2B3BE7.Up2Date
+¦               ¦   EmpManagement.Tests.AssemblyInfo.cs
+¦               ¦   EmpManagement.Tests.AssemblyInfoInputs.cache
+¦               ¦   EmpManagement.Tests.assets.cache
+¦               ¦   EmpManagement.Tests.csproj.AssemblyReference.cache
+¦               ¦   EmpManagement.Tests.GeneratedMSBuildEditorConfig.editorconfig
+¦               ¦   EmpManagement.Tests.GlobalUsings.g.cs
+¦               ¦   EmpManagementAPI.Tests.AssemblyInfo.cs
+¦               ¦   EmpManagementAPI.Tests.AssemblyInfoInputs.cache
+¦               ¦   EmpManagementAPI.Tests.assets.cache
+¦               ¦   EmpManagementAPI.Tests.csproj.AssemblyReference.cache
+¦               ¦   EmpManagementAPI.Tests.csproj.BuildWithSkipAnalyzers
+¦               ¦   EmpManagementAPI.Tests.csproj.CoreCompileInputs.cache
+¦               ¦   EmpManagementAPI.Tests.csproj.FileListAbsolute.txt
+¦               ¦   EmpManagementAPI.Tests.dll
+¦               ¦   EmpManagementAPI.Tests.GeneratedMSBuildEditorConfig.editorconfig
+¦               ¦   EmpManagementAPI.Tests.genruntimeconfig.cache
+¦               ¦   EmpManagementAPI.Tests.GlobalUsings.g.cs
+¦               ¦   EmpManagementAPI.Tests.pdb
+¦               ¦   EmpManagementAPI.Tests.sourcelink.json
+¦               ¦   
+¦               +---ref
+¦               ¦       EmpManagementAPI.Tests.dll
+¦               ¦       
+¦               +---refint
+¦                       EmpManagementAPI.Tests.dll
+¦                       
++---ServiceTest
+    ¦   EmployeeServiceTests.cs
+    ¦   ServiceTest.csproj
+    ¦   
+    +---bin
+    ¦   +---Debug
+    ¦       +---net8.0
+    ¦           ¦   .msCoverageSourceRootsMapping_ServiceTest
+    ¦           ¦   appsettings.Development.json
+    ¦           ¦   appsettings.json
+    ¦           ¦   Castle.Core.dll
+    ¦           ¦   CoverletSourceRootsMapping_ServiceTest
+    ¦           ¦   DnsClient.dll
+    ¦           ¦   EmployeeManagement.API.deps.json
+    ¦           ¦   EmployeeManagement.API.dll
+    ¦           ¦   EmployeeManagement.API.exe
+    ¦           ¦   EmployeeManagement.API.pdb
+    ¦           ¦   EmployeeManagement.API.runtimeconfig.json
+    ¦           ¦   EmployeeManagement.API.staticwebassets.endpoints.json
+    ¦           ¦   EmpManagement.Core.dll
+    ¦           ¦   EmpManagement.Core.pdb
+    ¦           ¦   EmpManagement.INFRA.dll
+    ¦           ¦   EmpManagement.INFRA.pdb
+    ¦           ¦   EmpManagement.SERVICES.dll
+    ¦           ¦   EmpManagement.SERVICES.pdb
+    ¦           ¦   EmpManagementAPI.Tests.deps.json
+    ¦           ¦   EmpManagementAPI.Tests.dll
+    ¦           ¦   EmpManagementAPI.Tests.pdb
+    ¦           ¦   EmpManagementAPI.Tests.runtimeconfig.json
+    ¦           ¦   Microsoft.Extensions.DependencyInjection.Abstractions.dll
+    ¦           ¦   Microsoft.Extensions.DependencyInjection.dll
+    ¦           ¦   Microsoft.Extensions.Logging.Abstractions.dll
+    ¦           ¦   Microsoft.Extensions.Logging.dll
+    ¦           ¦   Microsoft.Extensions.Options.dll
+    ¦           ¦   Microsoft.Extensions.Primitives.dll
+    ¦           ¦   Microsoft.OpenApi.dll
+    ¦           ¦   Microsoft.TestPlatform.CommunicationUtilities.dll
+    ¦           ¦   Microsoft.TestPlatform.CoreUtilities.dll
+    ¦           ¦   Microsoft.TestPlatform.CrossPlatEngine.dll
+    ¦           ¦   Microsoft.TestPlatform.PlatformAbstractions.dll
+    ¦           ¦   Microsoft.TestPlatform.Utilities.dll
+    ¦           ¦   Microsoft.VisualStudio.CodeCoverage.Shim.dll
+    ¦           ¦   Microsoft.VisualStudio.TestPlatform.Common.dll
+    ¦           ¦   Microsoft.VisualStudio.TestPlatform.ObjectModel.dll
+    ¦           ¦   MongoDB.Bson.dll
+    ¦           ¦   MongoDB.Driver.dll
+    ¦           ¦   Moq.dll
+    ¦           ¦   Newtonsoft.Json.dll
+    ¦           ¦   NuGet.Common.dll
+    ¦           ¦   NuGet.Configuration.dll
+    ¦           ¦   NuGet.Frameworks.dll
+    ¦           ¦   NuGet.Packaging.dll
+    ¦           ¦   NuGet.Protocol.dll
+    ¦           ¦   NuGet.Versioning.dll
+    ¦           ¦   ServiceTest.deps.json
+    ¦           ¦   ServiceTest.dll
+    ¦           ¦   ServiceTest.pdb
+    ¦           ¦   ServiceTest.runtimeconfig.json
+    ¦           ¦   SharpCompress.dll
+    ¦           ¦   Snappier.dll
+    ¦           ¦   Swashbuckle.AspNetCore.Swagger.dll
+    ¦           ¦   Swashbuckle.AspNetCore.SwaggerGen.dll
+    ¦           ¦   Swashbuckle.AspNetCore.SwaggerUI.dll
+    ¦           ¦   System.Diagnostics.DiagnosticSource.dll
+    ¦           ¦   System.Security.Cryptography.ProtectedData.dll
+    ¦           ¦   testhost.dll
+    ¦           ¦   testhost.exe
+    ¦           ¦   xunit.abstractions.dll
+    ¦           ¦   xunit.assert.dll
+    ¦           ¦   xunit.core.dll
+    ¦           ¦   xunit.execution.dotnet.dll
+    ¦           ¦   xunit.runner.visualstudio.testadapter.dll
+    ¦           ¦   ZstdSharp.dll
+    ¦           ¦   
+    ¦           +---cs
+    ¦           ¦       Microsoft.TestPlatform.CommunicationUtilities.resources.dll
+    ¦           ¦       Microsoft.TestPlatform.CoreUtilities.resources.dll
+    ¦           ¦       Microsoft.TestPlatform.CrossPlatEngine.resources.dll
+    ¦           ¦       Microsoft.VisualStudio.TestPlatform.Common.resources.dll
+    ¦           ¦       Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll
+    ¦           ¦       
+    ¦           +---de
+    ¦           ¦       Microsoft.TestPlatform.CommunicationUtilities.resources.dll
+    ¦           ¦       Microsoft.TestPlatform.CoreUtilities.resources.dll
+    ¦           ¦       Microsoft.TestPlatform.CrossPlatEngine.resources.dll
+    ¦           ¦       Microsoft.VisualStudio.TestPlatform.Common.resources.dll
+    ¦           ¦       Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll
+    ¦           ¦       
+    ¦           +---es
+    ¦           ¦       Microsoft.TestPlatform.CommunicationUtilities.resources.dll
+    ¦           ¦       Microsoft.TestPlatform.CoreUtilities.resources.dll
+    ¦           ¦       Microsoft.TestPlatform.CrossPlatEngine.resources.dll
+    ¦           ¦       Microsoft.VisualStudio.TestPlatform.Common.resources.dll
+    ¦           ¦       Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll
+    ¦           ¦       
+    ¦           +---fr
+    ¦           ¦       Microsoft.TestPlatform.CommunicationUtilities.resources.dll
+    ¦           ¦       Microsoft.TestPlatform.CoreUtilities.resources.dll
+    ¦           ¦       Microsoft.TestPlatform.CrossPlatEngine.resources.dll
+    ¦           ¦       Microsoft.VisualStudio.TestPlatform.Common.resources.dll
+    ¦           ¦       Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll
+    ¦           ¦       
+    ¦           +---it
+    ¦           ¦       Microsoft.TestPlatform.CommunicationUtilities.resources.dll
+    ¦           ¦       Microsoft.TestPlatform.CoreUtilities.resources.dll
+    ¦           ¦       Microsoft.TestPlatform.CrossPlatEngine.resources.dll
+    ¦           ¦       Microsoft.VisualStudio.TestPlatform.Common.resources.dll
+    ¦           ¦       Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll
+    ¦           ¦       
+    ¦           +---ja
+    ¦           ¦       Microsoft.TestPlatform.CommunicationUtilities.resources.dll
+    ¦           ¦       Microsoft.TestPlatform.CoreUtilities.resources.dll
+    ¦           ¦       Microsoft.TestPlatform.CrossPlatEngine.resources.dll
+    ¦           ¦       Microsoft.VisualStudio.TestPlatform.Common.resources.dll
+    ¦           ¦       Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll
+    ¦           ¦       
+    ¦           +---ko
+    ¦           ¦       Microsoft.TestPlatform.CommunicationUtilities.resources.dll
+    ¦           ¦       Microsoft.TestPlatform.CoreUtilities.resources.dll
+    ¦           ¦       Microsoft.TestPlatform.CrossPlatEngine.resources.dll
+    ¦           ¦       Microsoft.VisualStudio.TestPlatform.Common.resources.dll
+    ¦           ¦       Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll
+    ¦           ¦       
+    ¦           +---pl
+    ¦           ¦       Microsoft.TestPlatform.CommunicationUtilities.resources.dll
+    ¦           ¦       Microsoft.TestPlatform.CoreUtilities.resources.dll
+    ¦           ¦       Microsoft.TestPlatform.CrossPlatEngine.resources.dll
+    ¦           ¦       Microsoft.VisualStudio.TestPlatform.Common.resources.dll
+    ¦           ¦       Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll
+    ¦           ¦       
+    ¦           +---pt-BR
+    ¦           ¦       Microsoft.TestPlatform.CommunicationUtilities.resources.dll
+    ¦           ¦       Microsoft.TestPlatform.CoreUtilities.resources.dll
+    ¦           ¦       Microsoft.TestPlatform.CrossPlatEngine.resources.dll
+    ¦           ¦       Microsoft.VisualStudio.TestPlatform.Common.resources.dll
+    ¦           ¦       Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll
+    ¦           ¦       
+    ¦           +---ru
+    ¦           ¦       Microsoft.TestPlatform.CommunicationUtilities.resources.dll
+    ¦           ¦       Microsoft.TestPlatform.CoreUtilities.resources.dll
+    ¦           ¦       Microsoft.TestPlatform.CrossPlatEngine.resources.dll
+    ¦           ¦       Microsoft.VisualStudio.TestPlatform.Common.resources.dll
+    ¦           ¦       Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll
+    ¦           ¦       
+    ¦           +---runtimes
+    ¦           ¦   +---win
+    ¦           ¦       +---lib
+    ¦           ¦           +---netstandard2.0
+    ¦           ¦                   System.Security.Cryptography.ProtectedData.dll
+    ¦           ¦                   
+    ¦           +---tr
+    ¦           ¦       Microsoft.TestPlatform.CommunicationUtilities.resources.dll
+    ¦           ¦       Microsoft.TestPlatform.CoreUtilities.resources.dll
+    ¦           ¦       Microsoft.TestPlatform.CrossPlatEngine.resources.dll
+    ¦           ¦       Microsoft.VisualStudio.TestPlatform.Common.resources.dll
+    ¦           ¦       Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll
+    ¦           ¦       
+    ¦           +---zh-Hans
+    ¦           ¦       Microsoft.TestPlatform.CommunicationUtilities.resources.dll
+    ¦           ¦       Microsoft.TestPlatform.CoreUtilities.resources.dll
+    ¦           ¦       Microsoft.TestPlatform.CrossPlatEngine.resources.dll
+    ¦           ¦       Microsoft.VisualStudio.TestPlatform.Common.resources.dll
+    ¦           ¦       Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll
+    ¦           ¦       
+    ¦           +---zh-Hant
+    ¦                   Microsoft.TestPlatform.CommunicationUtilities.resources.dll
+    ¦                   Microsoft.TestPlatform.CoreUtilities.resources.dll
+    ¦                   Microsoft.TestPlatform.CrossPlatEngine.resources.dll
+    ¦                   Microsoft.VisualStudio.TestPlatform.Common.resources.dll
+    ¦                   Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll
+    ¦                   
+    +---obj
+        ¦   project.assets.json
+        ¦   project.nuget.cache
+        ¦   ServiceTest.csproj.nuget.dgspec.json
+        ¦   ServiceTest.csproj.nuget.g.props
+        ¦   ServiceTest.csproj.nuget.g.targets
+        ¦   
+        +---Debug
+            +---net8.0
+                ¦   .NETCoreApp,Version=v8.0.AssemblyAttributes.cs
+                ¦   ServiceT.48EA2C55.Up2Date
+                ¦   ServiceTest.AssemblyInfo.cs
+                ¦   ServiceTest.AssemblyInfoInputs.cache
+                ¦   ServiceTest.assets.cache
+                ¦   ServiceTest.csproj.AssemblyReference.cache
+                ¦   ServiceTest.csproj.BuildWithSkipAnalyzers
+                ¦   ServiceTest.csproj.CoreCompileInputs.cache
+                ¦   ServiceTest.csproj.FileListAbsolute.txt
+                ¦   ServiceTest.dll
+                ¦   ServiceTest.GeneratedMSBuildEditorConfig.editorconfig
+                ¦   ServiceTest.genruntimeconfig.cache
+                ¦   ServiceTest.GlobalUsings.g.cs
+                ¦   ServiceTest.pdb
+                ¦   ServiceTest.sourcelink.json
+                ¦   
+                +---ref
+                ¦       ServiceTest.dll
+                ¦       
+                +---refint
+                        ServiceTest.dll
+                        
